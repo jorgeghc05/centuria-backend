@@ -291,6 +291,7 @@
         cargando: 'Cargando…', volver: 'Volver', condiciones: 'Condiciones', privacidad: 'Privacidad',
         eSalida: 'Elige la salida que quieres regalar.', ePara: 'Escribe para quién es el regalo.', eDe: 'Escribe tu nombre.', eAcepto: 'Tienes que aceptar las condiciones.',
         eRed: 'No hemos podido conectar con el servidor. Si es el primer intento del día puede tardar un poco en despertar: vuelve a probar en unos segundos.',
+        eNoActivo: 'La compra de bonos aún no está activa en el servidor. Escríbenos por WhatsApp y te lo preparamos.',
         eBono: 'No hemos encontrado este bono. Revisa el enlace o escríbenos por WhatsApp.', ePendiente: 'El pago aún se está confirmando. Recarga la página en unos segundos.',
         estadoCanjeado: 'Este bono ya se ha usado.', estadoCaducado: 'Este bono ha caducado.', estadoAnulado: 'Este bono se anuló y se devolvió el importe.',
         meses: ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
@@ -318,6 +319,7 @@
         cargando: 'Loading…', volver: 'Back', condiciones: 'Terms', privacidad: 'Privacy',
         eSalida: 'Choose the trip you want to give.', ePara: 'Write who the gift is for.', eDe: 'Write your name.', eAcepto: 'You need to accept the terms.',
         eRed: 'We could not reach the server. If it is the first try of the day it can take a moment to wake up: try again in a few seconds.',
+        eNoActivo: 'Voucher sales are not active on the server yet. Message us on WhatsApp and we will prepare it for you.',
         eBono: 'We could not find this voucher. Check the link or message us on WhatsApp.', ePendiente: 'The payment is still being confirmed. Reload the page in a few seconds.',
         estadoCanjeado: 'This voucher has already been used.', estadoCaducado: 'This voucher has expired.', estadoAnulado: 'This voucher was cancelled and refunded.',
         meses: ['January','February','March','April','May','June','July','August','September','October','November','December']
@@ -434,7 +436,7 @@
         body: JSON.stringify({ servicio: s.id, para: para, de: de, mensaje: $('mensaje').value.trim(), idioma: idioma, aceptaCondiciones: true })
       }, 3).then(function (j) {
         if (j.url) { location.href = j.url; return; }
-        throw new Error(j.error || t('eRed'));
+        throw new Error(j.error || (j._status === 404 ? t('eNoActivo') : t('eRed')));
       }).catch(function (e) {
         boton.disabled = false;
         actualizar();
