@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Regalar una salida · Centuria</title>
+  <meta name="description" content="Regala una salida privada en barco con patrón desde El Candado, Málaga. Bono con fecha abierta, válido 6 meses. Lo pagas online y lo recibes al momento para imprimir o enviar.">
+  <meta name="theme-color" content="#12303d">
+  <meta property="og:title" content="Regalar una salida en barco · Centuria">
+  <meta property="og:description" content="Bono regalo con fecha abierta para una salida privada en barco por la costa de Málaga.">
+  <meta property="og:image" content="imagenes/centuria_mar.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mar: #12303d;
+      --mar-2: #1d4a5c;
+      --espuma: #f5f2ec;
+      --papel: #fffdf8;
+      --arena: #e9e1d2;
+      --tinta: #1b2a30;
+      --tenue: #5d6f75;
+      --acento: #d8461f;
+      --acento-2: #b93616;
+      --ok: #18794e;
+      --borde: #d9d2c4;
+      --radio: 14px;
+      --serif: 'Fraunces', Georgia, serif;
+      --sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: var(--espuma); color: var(--tinta); font: 16px/1.6 var(--sans); }
+    a { color: var(--mar-2); }
+    img { max-width: 100%; display: block; }
+
+    .cab { background: var(--mar); color: #fff; }
+    .cab .dentro { max-width: 1120px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; gap: 20px; justify-content: space-between; }
+    .marca { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-family: var(--serif); font-size: 20px; letter-spacing: .04em; }
+    .marca img { width: 34px; height: 34px; object-fit: contain; }
+    .cab nav { display: flex; gap: 18px; flex-wrap: wrap; }
+    .cab nav a { color: #d7e6eb; text-decoration: none; font-size: 15px; }
+    .cab nav a:hover, .cab nav a[aria-current] { color: #fff; }
+    .idiomas { display: flex; gap: 4px; }
+    @media (max-width: 760px) {
+      .cab .dentro { flex-wrap: wrap; gap: 10px 16px; }
+      .cab nav { order: 3; width: 100%; flex-wrap: nowrap; overflow-x: auto; gap: 16px; padding-bottom: 2px; }
+      .cab nav a { white-space: nowrap; }
+    }
+    .idiomas button { background: transparent; border: 1px solid rgba(255,255,255,.35); color: #fff; border-radius: 6px; padding: 3px 8px; font: 600 12px var(--sans); cursor: pointer; }
+    .idiomas button[aria-pressed="true"] { background: #fff; color: var(--mar); }
+
+    main { max-width: 1120px; margin: 0 auto; padding: 36px 20px 64px; }
+    .intro { max-width: 640px; margin-bottom: 28px; }
+    .eyebrow { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--acento); font-weight: 700; }
+    h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(30px, 5vw, 44px); line-height: 1.1; margin: 6px 0 12px; color: var(--mar); }
+    .intro p { margin: 0; color: var(--tenue); font-size: 17px; }
+
+    .rejilla { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 36px; align-items: start; }
+    @media (max-width: 860px) { .rejilla { grid-template-columns: 1fr; } .vista { order: -1; } }
+
+    form { background: var(--papel); border: 1px solid var(--borde); border-radius: var(--radio); padding: 24px; }
+    fieldset { border: 0; padding: 0; margin: 0 0 20px; }
+    legend, label.tit { font-weight: 700; font-size: 15px; margin-bottom: 8px; display: block; color: var(--mar); }
+    .salidas { display: grid; gap: 8px; }
+    .salida { display: flex; align-items: center; gap: 12px; border: 1px solid var(--borde); border-radius: 10px; padding: 11px 14px; cursor: pointer; background: #fff; }
+    .salida:hover { border-color: var(--mar-2); }
+    .salida input { accent-color: var(--mar); width: 18px; height: 18px; margin: 0; flex: none; }
+    .salida .nom { flex: 1; min-width: 0; }
+    .salida .nom small { display: block; color: var(--tenue); font-size: 13px; }
+    .salida .pre { font-weight: 700; white-space: nowrap; }
+    .salida:has(input:checked) { border-color: var(--mar); box-shadow: 0 0 0 2px var(--mar) inset; }
+    .campo { margin-bottom: 16px; }
+    input[type=text], textarea { width: 100%; border: 1px solid var(--borde); border-radius: 10px; padding: 11px 13px; font: 16px var(--sans); color: var(--tinta); background: #fff; }
+    input[type=text]:focus, textarea:focus, .salida:focus-within { outline: 2px solid var(--mar-2); outline-offset: 1px; }
+    textarea { resize: vertical; min-height: 76px; }
+    .ayuda { font-size: 13px; color: var(--tenue); margin-top: 4px; }
+    .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 480px) { .dos { grid-template-columns: 1fr; } }
+    .acepto { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--tenue); margin: 4px 0 18px; }
+    .acepto input { margin-top: 4px; accent-color: var(--mar); width: 17px; height: 17px; flex: none; }
+    .incluye { list-style: none; margin: 0 0 18px; padding: 14px 16px; background: var(--espuma); border-radius: 10px; font-size: 14px; color: var(--tenue); display: grid; gap: 4px; }
+    .incluye li::before { content: '✓ '; color: var(--ok); font-weight: 700; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 10px; padding: 14px 22px; font: 700 16px var(--sans); cursor: pointer; text-decoration: none; }
+    .btn.prim { background: var(--acento); color: #fff; width: 100%; }
+    .btn.prim:hover { background: var(--acento-2); }
+    .btn.prim:disabled { opacity: .6; cursor: wait; }
+    .btn.sec { background: #fff; color: var(--mar); border: 1px solid var(--borde); }
+    .btn.sec:hover { border-color: var(--mar); }
+    .aviso { padding: 12px 14px; border-radius: 10px; font-size: 15px; margin-bottom: 16px; }
+    .aviso.error { background: #fdecea; color: #8a1f11; }
+    .aviso.info { background: #e8f1f4; color: var(--mar); }
+    .pago-seguro { text-align: center; font-size: 13px; color: var(--tenue); margin: 10px 0 0; }
+
+    /* ---------- El bono ---------- */
+    .vista { position: sticky; top: 20px; }
+    .vista > p { font-size: 13px; color: var(--tenue); text-align: center; margin: 10px 0 0; }
+    .bono { background: var(--papel); border-radius: 18px; overflow: hidden; box-shadow: 0 18px 50px rgba(18, 48, 61, .18); display: grid; grid-template-columns: 38% 62%; min-height: 330px; border: 1px solid var(--arena); }
+    .bono .foto { background: var(--mar) url('imagenes/atardecer_penyon_cuervo.jpg') center / cover; position: relative; color: #fff; display: flex; flex-direction: column; justify-content: space-between; padding: 18px; }
+    .bono .foto::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,48,61,.25), rgba(18,48,61,.85)); }
+    .bono .foto > * { position: relative; }
+    .bono .foto img { width: 46px; height: 46px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,.3)); }
+    .bono .foto .nom { font-family: var(--serif); font-size: 22px; letter-spacing: .08em; line-height: 1.1; }
+    .bono .foto .nom small { display: block; font: 500 11px var(--sans); letter-spacing: .18em; opacity: .85; margin-top: 4px; }
+    .bono .datos { padding: 22px 22px 18px; display: flex; flex-direction: column; gap: 10px; }
+    .bono .etq { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--acento); font-weight: 700; }
+    .bono .para { font-family: var(--serif); font-size: clamp(22px, 3.2vw, 28px); line-height: 1.15; color: var(--mar); margin: 0; word-break: break-word; }
+    .bono .que { font-weight: 700; font-size: 16px; }
+    .bono .que small { display: block; font-weight: 400; color: var(--tenue); font-size: 13px; }
+    .bono .msj { font-style: italic; color: var(--tinta); font-size: 14.5px; border-left: 3px solid var(--arena); padding-left: 10px; margin: 0; word-break: break-word; }
+    .bono .de { font-size: 13px; color: var(--tenue); margin: 0; }
+    .bono .pie { margin-top: auto; display: flex; justify-content: space-between; gap: 12px; align-items: flex-end; border-top: 1px dashed var(--borde); padding-top: 10px; }
+    .bono .pie span { display: block; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--tenue); }
+    .bono .pie strong { font-size: 15px; letter-spacing: .04em; }
+    .bono .pie strong { white-space: nowrap; }
+    .bono .codigo strong { font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; font-size: 16px; color: var(--mar); }
+    .bono .como { font-size: 12px; color: var(--tenue); margin: 0; line-height: 1.45; }
+    @media (max-width: 520px) {
+      .bono { grid-template-columns: 1fr; }
+      .bono .foto { min-height: 120px; flex-direction: row; align-items: flex-end; }
+    }
+
+    /* ---------- Tras pagar ---------- */
+    .hecho { max-width: 760px; margin: 0 auto; }
+    .hecho .ok { display: inline-grid; place-items: center; width: 54px; height: 54px; border-radius: 50%; background: #e1f4eb; color: var(--ok); font-size: 28px; margin-bottom: 8px; }
+    .acciones { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 10px; }
+    .acciones .btn { flex: 1 1 200px; }
+    .nota { font-size: 14px; color: var(--tenue); }
+    .cargando { padding: 60px 0; text-align: center; color: var(--tenue); }
+
+    footer { border-top: 1px solid var(--borde); padding: 22px 20px; text-align: center; font-size: 14px; color: var(--tenue); }
+    footer a { color: var(--tenue); }
+    [hidden] { display: none !important; }
+
+    @media print {
+      @page { size: A4 landscape; margin: 12mm; }
+      body { background: #fff; }
+      .cab, footer, .no-print, .intro, form, .acciones, .nota, .vista > p { display: none !important; }
+      main, .hecho { padding: 0; max-width: none; }
+      .bono { box-shadow: none; border: 1px solid #ccc; grid-template-columns: 38% 62%; min-height: 95mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .bono .foto { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+  <header class="cab">
+    <div class="dentro">
+      <a class="marca" href="index.html"><img src="imagenes/logo-centuria.png" alt="">Centuria</a>
+      <nav>
+        <a href="index.html" data-t="navSalidas">Salidas</a>
+        <a href="barco.html" data-t="navBarco">El barco</a>
+        <a href="contacto.html" data-t="navDonde">Dónde estamos</a>
+        <a href="regalo.html" aria-current="page" data-t="navRegalo">Regalar</a>
+        <a href="disponibilidad.html" data-t="navReservar">Reservar</a>
+      </nav>
+      <div class="idiomas" role="group" aria-label="Idioma">
+        <button type="button" data-idioma="es" aria-pressed="true">ES</button>
+        <button type="button" data-idioma="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== Comprar ===== -->
+    <section id="comprar" hidden>
+      <div class="intro">
+        <span class="eyebrow" data-t="eyebrow">Bono regalo</span>
+        <h1 data-t="titulo">Regala una salida en barco</h1>
+        <p data-t="intro">Eliges la salida, lo pagas aquí y te llega el bono al momento, listo para imprimir o mandar por WhatsApp. Quien lo recibe elige el día cuando quiera en los próximos 6 meses.</p>
+      </div>
+
+      <div class="rejilla">
+        <form id="form" novalidate>
+          <div class="aviso info" id="avisoCancelado" hidden data-t="cancelado">Has vuelto sin pagar. No se ha cobrado nada; puedes revisar los datos y probar otra vez.</div>
+          <div class="aviso error" id="error" role="alert" hidden></div>
+
+          <fieldset>
+            <legend data-t="queSalida">¿Qué salida regalas?</legend>
+            <div class="salidas" id="salidas"></div>
+          </fieldset>
+
+          <div class="campo">
+            <label class="tit" for="para" data-t="labelPara">Para quién es</label>
+            <input type="text" id="para" maxlength="60" autocomplete="off" data-ph="phPara" placeholder="Ana y Luis">
+          </div>
+          <div class="campo">
+            <label class="tit" for="de" data-t="labelDe">De parte de</label>
+            <input type="text" id="de" maxlength="60" autocomplete="name" data-ph="phDe" placeholder="Tu nombre">
+          </div>
+          <div class="campo">
+            <label class="tit" for="mensaje" data-t="labelMensaje">Un mensaje (opcional)</label>
+            <textarea id="mensaje" maxlength="200" data-ph="phMensaje" placeholder="¡Feliz aniversario! Que lo disfrutéis."></textarea>
+            <div class="ayuda"><span id="cuenta">0</span>/200</div>
+          </div>
+
+          <ul class="incluye">
+            <li data-t="inc1">Barco solo para su grupo, hasta 8 personas, con el patrón</li>
+            <li data-t="inc2">Fecha abierta: 6 meses para elegir día, según disponibilidad</li>
+            <li data-t="inc3">IVA, gasolina, amarre y seguros incluidos</li>
+          </ul>
+
+          <label class="acepto">
+            <input type="checkbox" id="acepto">
+            <span data-t="acepto">He leído y acepto las <a href="condiciones.html" target="_blank">condiciones</a> y la <a href="condiciones.html#privacidad" target="_blank">política de privacidad</a>.</span>
+          </label>
+
+          <button class="btn prim" type="submit" id="pagar"><span id="pagarTexto">Pagar y recibir el bono</span></button>
+          <p class="pago-seguro" data-t="seguro">Pago seguro con tarjeta a través de Stripe. Recibirás también el justificante por email.</p>
+        </form>
+
+        <div class="vista" aria-live="polite">
+          <div id="bonoVista"></div>
+          <p data-t="asiSeVe">Así se verá el bono. El código se genera al pagar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Bono pagado ===== -->
+    <section id="pagado" class="hecho" hidden>
+      <div class="no-print">
+        <div class="ok" aria-hidden="true">✓</div>
+        <h1 data-t="listoTitulo">Tu bono está listo</h1>
+        <p class="nota" data-t="listoTexto">Guárdalo en PDF o mándaselo directamente. Para reservar, quien lo recibe escribe por WhatsApp con el código y elige el día con el patrón.</p>
+      </div>
+      <div id="bonoFinal" style="margin-top: 22px"></div>
+      <div class="acciones">
+        <button class="btn prim" type="button" id="imprimir" data-t="imprimir">Guardar PDF / imprimir</button>
+        <a class="btn sec" id="compartir" target="_blank" rel="noopener" data-t="compartir">Enviar por WhatsApp</a>
+        <button class="btn sec" type="button" id="copiar" data-t="copiar">Copiar enlace del bono</button>
+      </div>
+      <p class="nota" data-t="guardaEnlace">Guarda este enlace: desde él puedes volver a ver e imprimir el bono cuando quieras. Para el PDF, en la ventana de impresión elige «Guardar como PDF».</p>
+    </section>
+
+    <div id="cargando" class="cargando" data-t="cargando">Cargando…</div>
+    <div id="errorBono" class="hecho" hidden>
+      <div class="aviso error" id="errorBonoTexto"></div>
+      <a class="btn sec" href="regalo.html" data-t="volver">Volver</a>
+    </div>
+  </main>
+
+  <footer>
+    Centuria Sea Adventure · Real Club El Candado, Málaga ·
+    <a href="condiciones.html" data-t="condiciones">Condiciones</a> ·
+    <a href="condiciones.html#privacidad" data-t="privacidad">Privacidad</a>
+  </footer>
+
+  <script>
+  (function () {
+    'use strict';
+
+    // Misma regla que js/datos.js: en local, el servidor local.
+    var API = /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
+      ? 'http://localhost:3000'
+      : 'https://centuria-backend-xef0.onrender.com';
+
+    // Por si el servidor está dormido (Render gratis) o no responde.
+    var SALIDAS_RESPALDO = [
+      { id: 'paseo', nombre: 'Paseo por la costa', en: 'Coastal trip', horas: 3, precio: 350 },
+      { id: 'atardecer', nombre: 'Puesta de sol', en: 'Sunset trip', horas: 3, precio: 350 },
+      { id: 'delfines', nombre: 'Avistamiento de delfines', en: 'Dolphin watching', horas: 3, precio: 350 },
+      { id: 'pesca', nombre: 'Pesca con el patrón (4 h)', en: 'Fishing with the skipper (4 h)', horas: 4, precio: 399 },
+      { id: 'pesca-8h', nombre: 'Pesca con el patrón (8 h)', en: 'Fishing with the skipper (8 h)', horas: 8, precio: 600 },
+      { id: 'celebracion', nombre: 'Celebración a bordo (4 h)', en: 'Celebration on board (4 h)', horas: 4, precio: 350 },
+      { id: 'celebracion-6h', nombre: 'Celebración a bordo (6 h)', en: 'Celebration on board (6 h)', horas: 6, precio: 500 },
+      { id: 'dia', nombre: 'Día completo a Maro', en: 'Full day to Maro', horas: 8, precio: 600 }
+    ];
+
+    var T = {
+      es: {
+        navSalidas: 'Salidas', navBarco: 'El barco', navDonde: 'Dónde estamos', navRegalo: 'Regalar', navReservar: 'Reservar',
+        eyebrow: 'Bono regalo', titulo: 'Regala una salida en barco',
+        intro: 'Eliges la salida, lo pagas aquí y te llega el bono al momento, listo para imprimir o mandar por WhatsApp. Quien lo recibe elige el día cuando quiera en los próximos 6 meses.',
+        cancelado: 'Has vuelto sin pagar. No se ha cobrado nada; puedes revisar los datos y probar otra vez.',
+        queSalida: '¿Qué salida regalas?', labelPara: 'Para quién es', labelDe: 'De parte de', labelMensaje: 'Un mensaje (opcional)',
+        phPara: 'Ana y Luis', phDe: 'Tu nombre', phMensaje: '¡Feliz aniversario! Que lo disfrutéis.',
+        inc1: 'Barco solo para su grupo, hasta 8 personas, con el patrón', inc2: 'Fecha abierta: 6 meses para elegir día, según disponibilidad', inc3: 'IVA, gasolina, amarre y seguros incluidos',
+        acepto: 'He leído y acepto las <a href="condiciones.html" target="_blank">condiciones</a> y la <a href="condiciones.html#privacidad" target="_blank">política de privacidad</a>.',
+        pagar: 'Pagar {p} y recibir el bono', pagarSin: 'Pagar y recibir el bono', redirigiendo: 'Abriendo el pago seguro…',
+        seguro: 'Pago seguro con tarjeta a través de Stripe. Recibirás también el justificante por email.',
+        asiSeVe: 'Así se verá el bono. El código se genera al pagar.',
+        bonoEtq: 'Bono regalo · Salida privada en barco', bonoPara: 'Para', bonoDe: 'De parte de {de}',
+        bonoGrupo: 'Hasta {n} personas · {h} h · con patrón', bonoCodigo: 'Código', bonoValido: 'Válido hasta',
+        bonoComo: 'Para reservar, escribe por WhatsApp con este código y elige el día con el patrón. Salida desde el Real Club El Candado, Málaga.',
+        sinNombre: 'Nombre', pendienteCodigo: 'CEN-····-····',
+        listoTitulo: 'Tu bono está listo', listoTexto: 'Guárdalo en PDF o mándaselo directamente. Para reservar, quien lo recibe escribe por WhatsApp con el código y elige el día con el patrón.',
+        imprimir: 'Guardar PDF / imprimir', compartir: 'Enviar por WhatsApp', copiar: 'Copiar enlace del bono', copiado: '¡Enlace copiado!',
+        guardaEnlace: 'Guarda este enlace: desde él puedes volver a ver e imprimir el bono cuando quieras. Para el PDF, en la ventana de impresión elige «Guardar como PDF».',
+        whatsapp: '🎁 Te han regalado una salida en barco: {s}. Código {c}, válido hasta el {f}. Aquí tienes el bono: {u}',
+        cargando: 'Cargando…', volver: 'Volver', condiciones: 'Condiciones', privacidad: 'Privacidad',
+        eSalida: 'Elige la salida que quieres regalar.', ePara: 'Escribe para quién es el regalo.', eDe: 'Escribe tu nombre.', eAcepto: 'Tienes que aceptar las condiciones.',
+        eRed: 'No hemos podido conectar con el servidor. Si es el primer intento del día puede tardar un poco en despertar: vuelve a probar en unos segundos.',
+        eNoActivo: 'La compra de bonos aún no está activa en el servidor. Escríbenos por WhatsApp y te lo preparamos.',
+        eBono: 'No hemos encontrado este bono. Revisa el enlace o escríbenos por WhatsApp.', ePendiente: 'El pago aún se está confirmando. Recarga la página en unos segundos.',
+        estadoCanjeado: 'Este bono ya se ha usado.', estadoCaducado: 'Este bono ha caducado.', estadoAnulado: 'Este bono se anuló y se devolvió el importe.',
+        meses: ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
+      },
+      en: {
+        navSalidas: 'Trips', navBarco: 'The boat', navDonde: 'Find us', navRegalo: 'Gift', navReservar: 'Book',
+        eyebrow: 'Gift voucher', titulo: 'Give a boat trip as a gift',
+        intro: 'Choose the trip, pay here and get the voucher right away, ready to print or send on WhatsApp. They pick the day whenever they like within the next 6 months.',
+        cancelado: 'You came back without paying. Nothing was charged; check the details and try again.',
+        queSalida: 'Which trip are you giving?', labelPara: 'Who is it for', labelDe: 'From', labelMensaje: 'A message (optional)',
+        phPara: 'Anna and Luke', phDe: 'Your name', phMensaje: 'Happy anniversary! Enjoy it.',
+        inc1: 'The boat just for their group, up to 8 people, with the skipper', inc2: 'Open date: 6 months to choose a day, subject to availability', inc3: 'VAT, fuel, mooring and insurance included',
+        acepto: 'I have read and accept the <a href="condiciones.html" target="_blank">terms</a> and the <a href="condiciones.html#privacidad" target="_blank">privacy policy</a>.',
+        pagar: 'Pay {p} and get the voucher', pagarSin: 'Pay and get the voucher', redirigiendo: 'Opening secure payment…',
+        seguro: 'Secure card payment through Stripe. You will also get the receipt by email.',
+        asiSeVe: 'This is how the voucher will look. The code is created when you pay.',
+        bonoEtq: 'Gift voucher · Private boat trip', bonoPara: 'For', bonoDe: 'From {de}',
+        bonoGrupo: 'Up to {n} people · {h} h · with skipper', bonoCodigo: 'Code', bonoValido: 'Valid until',
+        bonoComo: 'To book, send us this code on WhatsApp and choose the day with the skipper. Departure from Real Club El Candado, Málaga.',
+        sinNombre: 'Name', pendienteCodigo: 'CEN-····-····',
+        listoTitulo: 'Your voucher is ready', listoTexto: 'Save it as a PDF or send it straight away. To book, they message us on WhatsApp with the code and choose the day with the skipper.',
+        imprimir: 'Save PDF / print', compartir: 'Send on WhatsApp', copiar: 'Copy voucher link', copiado: 'Link copied!',
+        guardaEnlace: 'Keep this link: you can come back to view and print the voucher any time. For a PDF, choose "Save as PDF" in the print window.',
+        whatsapp: '🎁 You have been given a boat trip: {s}. Code {c}, valid until {f}. Here is the voucher: {u}',
+        cargando: 'Loading…', volver: 'Back', condiciones: 'Terms', privacidad: 'Privacy',
+        eSalida: 'Choose the trip you want to give.', ePara: 'Write who the gift is for.', eDe: 'Write your name.', eAcepto: 'You need to accept the terms.',
+        eRed: 'We could not reach the server. If it is the first try of the day it can take a moment to wake up: try again in a few seconds.',
+        eNoActivo: 'Voucher sales are not active on the server yet. Message us on WhatsApp and we will prepare it for you.',
+        eBono: 'We could not find this voucher. Check the link or message us on WhatsApp.', ePendiente: 'The payment is still being confirmed. Reload the page in a few seconds.',
+        estadoCanjeado: 'This voucher has already been used.', estadoCaducado: 'This voucher has expired.', estadoAnulado: 'This voucher was cancelled and refunded.',
+        meses: ['January','February','March','April','May','June','July','August','September','October','November','December']
+      }
+    };
+
+    var $ = function (id) { return document.getElementById(id); };
+    var leer = function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } };
+    var guardar = function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} };
+    var params = new URLSearchParams(location.search);
+    var idioma = params.get('lang') === 'en' || (!params.get('lang') && (leer('idioma') || '') === 'en') ? 'en' : 'es';
+    var salidas = SALIDAS_RESPALDO.slice();
+    var maxPersonas = 8;
+    var bonoPagado = null;
+
+    function t(k, vars) {
+      var s = T[idioma][k] || T.es[k] || k;
+      if (vars) Object.keys(vars).forEach(function (v) { s = s.split('{' + v + '}').join(vars[v]); });
+      return s;
+    }
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+    }
+    function euros(n) { return n.toLocaleString(idioma === 'en' ? 'en-GB' : 'es-ES') + ' €'; }
+    function fechaLarga(iso) {
+      if (!iso) return '';
+      var p = iso.split('-').map(Number);
+      return idioma === 'en' ? p[2] + ' ' + t('meses')[p[1] - 1] + ' ' + p[0] : p[2] + ' de ' + t('meses')[p[1] - 1] + ' de ' + p[0];
+    }
+    function caducaEstimada() {
+      var d = new Date(); d.setMonth(d.getMonth() + 6);
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+    function salidaElegida() {
+      var r = document.querySelector('input[name=salida]:checked');
+      return r ? salidas.find(function (s) { return s.id === r.value; }) : null;
+    }
+
+    function aplicarIdioma() {
+      document.documentElement.lang = idioma;
+      document.querySelectorAll('[data-t]').forEach(function (el) { el.innerHTML = t(el.getAttribute('data-t')); });
+      document.querySelectorAll('[data-ph]').forEach(function (el) { el.placeholder = t(el.getAttribute('data-ph')); });
+      document.querySelectorAll('[data-idioma]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.idioma === idioma)); });
+      if (bonoPagado) pintarPagado(bonoPagado);
+      else { pintarSalidas(); actualizar(); }
+    }
+
+    function pintarSalidas() {
+      var elegida = (salidaElegida() || {}).id || params.get('servicio') || 'atardecer';
+      $('salidas').innerHTML = salidas.map(function (s) {
+        return '<label class="salida"><input type="radio" name="salida" value="' + esc(s.id) + '"' + (s.id === elegida ? ' checked' : '') + '>' +
+          '<span class="nom">' + esc(idioma === 'en' ? s.en : s.nombre) + '<small>' + s.horas + ' h</small></span>' +
+          '<span class="pre">' + euros(s.precio) + '</span></label>';
+      }).join('');
+    }
+
+    function htmlBono(d) {
+      var nombre = idioma === 'en' ? d.salidaEn : d.salida;
+      return '<article class="bono">' +
+        '<div class="foto"><img src="imagenes/logo-centuria.png" alt=""><div class="nom">CENTURIA<small>SEA ADVENTURE · MÁLAGA</small></div></div>' +
+        '<div class="datos">' +
+          '<span class="etq">' + esc(t('bonoEtq')) + '</span>' +
+          '<p class="para">' + esc(t('bonoPara')) + ' ' + esc(d.para || t('sinNombre')) + '</p>' +
+          '<div class="que">' + esc(nombre || '') + '<small>' + esc(t('bonoGrupo', { n: maxPersonas, h: d.horas || '–' })) + '</small></div>' +
+          (d.mensaje ? '<p class="msj">“' + esc(d.mensaje) + '”</p>' : '') +
+          (d.de ? '<p class="de">' + esc(t('bonoDe', { de: d.de })) + '</p>' : '') +
+          '<div class="pie"><div class="codigo"><span>' + esc(t('bonoCodigo')) + '</span><strong>' + esc(d.codigo || t('pendienteCodigo')) + '</strong></div>' +
+          '<div style="text-align:right"><span>' + esc(t('bonoValido')) + '</span><strong>' + esc(fechaLarga(d.caduca)) + '</strong></div></div>' +
+          '<p class="como">' + esc(t('bonoComo')) + '</p>' +
+        '</div></article>';
+    }
+
+    function actualizar() {
+      var s = salidaElegida();
+      $('bonoVista').innerHTML = htmlBono({
+        salida: s && s.nombre, salidaEn: s && s.en, horas: s && s.horas,
+        para: $('para').value.trim(), de: $('de').value.trim(), mensaje: $('mensaje').value.trim(), caduca: caducaEstimada()
+      });
+      $('cuenta').textContent = $('mensaje').value.length;
+      $('pagarTexto').textContent = s ? t('pagar', { p: euros(s.precio) }) : t('pagarSin');
+    }
+
+    function mostrarError(msg) {
+      $('error').textContent = msg;
+      $('error').hidden = !msg;
+      if (msg) $('error').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function fetchJSON(url, opciones, intentos) {
+      intentos = intentos || 1;
+      return fetch(url, opciones).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) { j._status = r.status; return j; });
+      }).catch(function (e) {
+        if (intentos > 1) return new Promise(function (ok) { setTimeout(ok, 3000); }).then(function () { return fetchJSON(url, opciones, intentos - 1); });
+        throw e;
+      });
+    }
+
+    function enviar(ev) {
+      ev.preventDefault();
+      mostrarError('');
+      var s = salidaElegida();
+      var para = $('para').value.trim(), de = $('de').value.trim();
+      if (!s) return mostrarError(t('eSalida'));
+      if (!para) { $('para').focus(); return mostrarError(t('ePara')); }
+      if (!de) { $('de').focus(); return mostrarError(t('eDe')); }
+      if (!$('acepto').checked) return mostrarError(t('eAcepto'));
+      var boton = $('pagar');
+      boton.disabled = true;
+      $('pagarTexto').textContent = t('redirigiendo');
+      fetchJSON(API + '/api/bono/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ servicio: s.id, para: para, de: de, mensaje: $('mensaje').value.trim(), idioma: idioma, aceptaCondiciones: true })
+      }, 3).then(function (j) {
+        if (j.url) { location.href = j.url; return; }
+        throw new Error(j.error || (j._status === 404 ? t('eNoActivo') : t('eRed')));
+      }).catch(function (e) {
+        boton.disabled = false;
+        actualizar();
+        mostrarError(e && e.message && e.message !== 'Failed to fetch' ? e.message : t('eRed'));
+      });
+    }
+
+    function pintarPagado(d) {
+      $('bonoFinal').innerHTML = htmlBono(d);
+      var nombre = idioma === 'en' ? d.salidaEn : d.salida;
+      var texto = t('whatsapp', { s: nombre, c: d.codigo, f: fechaLarga(d.caduca), u: location.href });
+      $('compartir').href = 'https://wa.me/?text=' + encodeURIComponent(texto);
+      var aviso = { canjeado: 'estadoCanjeado', caducado: 'estadoCaducado', anulado: 'estadoAnulado' }[d.estado];
+      var existente = document.querySelector('#pagado .aviso');
+      if (existente) existente.remove();
+      if (aviso) $('bonoFinal').insertAdjacentHTML('beforebegin', '<div class="aviso info no-print">' + esc(t(aviso)) + '</div>');
+      document.title = (idioma === 'en' ? 'Gift voucher ' : 'Bono regalo ') + d.codigo + ' · Centuria';
+    }
+
+    function cargarBono(sesion, intentos) {
+      fetchJSON(API + '/api/bono?sesion=' + encodeURIComponent(sesion), {}, 3).then(function (j) {
+        if (j._status === 402 && intentos > 0) return setTimeout(function () { cargarBono(sesion, intentos - 1); }, 2500);
+        $('cargando').hidden = true;
+        if (j._status !== 200) {
+          $('errorBonoTexto').textContent = j._status === 402 ? t('ePendiente') : j._status === 404 || j._status === 400 ? t('eBono') : (j.error || t('eRed'));
+          $('errorBono').hidden = false;
+          return;
+        }
+        bonoPagado = j;
+        maxPersonas = j.maxPersonas || maxPersonas;
+        if (!params.get('lang') && !leer('idioma')) { idioma = j.idioma; aplicarIdioma(); }
+        pintarPagado(j);
+        $('pagado').hidden = false;
+      }).catch(function () {
+        $('cargando').hidden = true;
+        $('errorBonoTexto').textContent = t('eRed');
+        $('errorBono').hidden = false;
+      });
+    }
+
+    document.querySelectorAll('[data-idioma]').forEach(function (b) {
+      b.addEventListener('click', function () { idioma = b.dataset.idioma; guardar('idioma', idioma); aplicarIdioma(); });
+    });
+    $('imprimir').addEventListener('click', function () { window.print(); });
+    $('copiar').addEventListener('click', function () {
+      var hecho = function () { $('copiar').textContent = t('copiado'); setTimeout(function () { $('copiar').textContent = t('copiar'); }, 2000); };
+      if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(hecho, function () { prompt('', location.href); });
+      else prompt('', location.href);
+    });
+
+    var sesion = params.get('sesion');
+    if (sesion) {
+      aplicarIdioma();
+      cargarBono(sesion, 4);
+    } else {
+      $('form').addEventListener('submit', enviar);
+      $('form').addEventListener('input', actualizar);
+      $('form').addEventListener('change', actualizar);
+      if (params.get('cancelado')) $('avisoCancelado').hidden = false;
+      aplicarIdioma();
+      $('cargando').hidden = true;
+      $('comprar').hidden = false;
+      // Precios del servidor (y lo despierta antes de pagar).
+      fetchJSON(API + '/api/bono/salidas').then(function (j) {
+        if (j && Array.isArray(j.salidas) && j.salidas.length) { salidas = j.salidas; pintarSalidas(); actualizar(); }
+      }).catch(function () {});
+    }
+  })();
+  </script>
+</body>
+</html>

@@ -10,6 +10,15 @@
  *   POST /api/liberar               -> el cliente vuelve atrás desde Stripe: se suelta el hueco
  *   POST /api/webhook               -> Stripe avisa del pago; se apunta la reserva en el calendario
  *
+ *   GET  /api/bono/salidas          -> salidas que se pueden regalar y su precio
+ *   POST /api/bono/checkout         -> crea el pago de un bono regalo en Stripe
+ *   GET  /api/bono?sesion=cs_…      -> datos del bono ya pagado (para enseñarlo e imprimirlo)
+ *
+ *   Panel (cabecera Authorization: Bearer <PANEL_CLAVE>):
+ *   GET  /api/panel/resumen?mes=YYYY-MM -> reservas, ingresos y bonos
+ *   GET  /api/panel/bono?codigo=CEN-…   -> comprobar un bono
+ *   POST /api/panel/bono/canjear        -> marcar un bono como canjeado (o deshacerlo)
+ *
  * Configuración en .env (ver .env.example y README.md).
  */
 
@@ -19,8 +28,11 @@ const cors = require('cors');
 const Stripe = require('stripe');
 
 const { SERVICIOS, EVENTOS, TURNOS, RE_HORA, buscarServicio, resolverHorario, precioTotal } = require('./lib/catalogo');
+const crypto = require('crypto');
 const { calcular, comprobarHueco, aplicarRetenciones, desdeGoogle, sumarDias } = require('./lib/disponibilidad');
 const { crearCalendario, credencialesCuentaServicio, idsCalendarios, listarEventos } = require('./lib/google');
+const bonos = require('./lib/bonos');
+const panel = require('./lib/panel');
 
 const env = process.env;
 const CFG = {
@@ -35,6 +47,7 @@ const CFG = {
   calendarioDisponibilidad: idsCalendarios(env).disponibilidad,
   calendarioReservas: idsCalendarios(env).reservas,
   versionCondiciones: env.VERSION_CONDICIONES || '2026-10',
+  panelClave: String(env.PANEL_CLAVE || '').trim(),
   codigos: (env.CODIGOS_DESCUENTO || '')
     .split(',')
     .map(c => c.trim().toUpperCase())
@@ -123,6 +136,8 @@ const LIMITE_EFECTIVO = 1000;
 // ---------------------------------------------------------------------------
 const app = express();
 app.disable('x-powered-by');
+// Render va detrás de un proxy: así req.ip es la IP real (para frenar intentos con la clave del panel).
+app.set('trust proxy', 1);
 
 const origenPermitido = origin =>
   !origin ||
@@ -144,6 +159,15 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, 
   }
 
   if (event.type === 'checkout.session.expired') retenciones.delete(event.data.object.id);
+
+  // Los bonos regalo no ocupan ningún hueco: no se apuntan en el calendario.
+  // El código y su estado viven en los metadatos del pago en Stripe.
+  if (event.type === 'checkout.session.completed' && (event.data.object.metadata || {}).tipo === 'bono') {
+    const m = event.data.object.metadata;
+    console.log(`Bono regalo pagado: ${m.codigo} · ${m.servicio} · para ${m.para}`);
+    sesionesCache.t = 0;
+    return res.json({ received: true });
+  }
 
   if (event.type === 'checkout.session.completed' && event.data.object.payment_status === 'paid') {
     try {
@@ -367,6 +391,204 @@ app.post('/api/liberar', async (req, res) => {
   }
   retenciones.delete(sesion);
   res.json({ ok: true });
+});
+
+// ---------------------------------------------------------------------------
+// Bono regalo comprado online
+// ---------------------------------------------------------------------------
+app.get('/api/bono/salidas', (_req, res) => {
+  res.set('Cache-Control', 'public, max-age=300');
+  res.json({ validezMeses: bonos.VALIDEZ_MESES, salidas: bonos.salidasRegalables() });
+});
+
+app.post('/api/bono/checkout', async (req, res) => {
+  const v = bonos.validarCompra(req.body || {});
+  if (v.error) return res.status(400).json({ error: v.error });
+  const { salida, para, de, mensaje, idioma } = v.datos;
+  const codigo = bonos.generarCodigo();
+  const emitido = hoyMadrid();
+  const caduca = bonos.caducidad(emitido);
+  const nombre = idioma === 'en' ? salida.en : salida.nombre;
+  const metadata = {
+    tipo: 'bono',
+    codigo,
+    servicio: salida.id,
+    para,
+    de,
+    mensaje: mensaje || '-',
+    emitido,
+    caduca,
+    idioma,
+    condiciones_version: CFG.versionCondiciones,
+    condiciones_aceptadas: new Date().toISOString()
+  };
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      locale: idioma,
+      expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
+      line_items: [
+        {
+          quantity: 1,
+          price_data: {
+            currency: 'eur',
+            unit_amount: salida.precio * 100,
+            product_data: {
+              name: idioma === 'en' ? `Gift voucher · ${nombre}` : `Bono regalo · ${nombre}`,
+              description:
+                idioma === 'en'
+                  ? `For ${para} · up to ${CFG.maxPersonas} people · open date, valid until ${caduca}`
+                  : `Para ${para} · hasta ${CFG.maxPersonas} personas · fecha abierta, válido hasta el ${caduca}`
+            }
+          }
+        }
+      ],
+      metadata,
+      // El canje se apunta en el PaymentIntent, así que lleva los mismos datos.
+      payment_intent_data: { metadata, description: `Bono regalo ${codigo} · ${salida.nombre} · para ${para}` },
+      success_url: `${CFG.frontend}/regalo.html?sesion={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${CFG.frontend}/regalo.html?servicio=${encodeURIComponent(salida.id)}&cancelado=1`
+    });
+    res.json({ url: session.url });
+  } catch (err) {
+    console.error('Error creando el pago del bono:', err.message);
+    res.status(500).json({ error: 'No se pudo iniciar el pago.' });
+  }
+});
+
+// El id de sesión de Stripe es largo y aleatorio: quien lo tiene (el comprador,
+// que vuelve con él desde Stripe) puede ver e imprimir su bono.
+app.get('/api/bono', async (req, res) => {
+  const sesion = String(req.query.sesion || '');
+  if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sesion)) return res.status(400).json({ error: 'Enlace de bono no válido.' });
+  try {
+    const s = await stripe.checkout.sessions.retrieve(sesion, { expand: ['payment_intent.latest_charge'] });
+    if ((s.metadata || {}).tipo !== 'bono') return res.status(404).json({ error: 'Bono no encontrado.' });
+    if (s.payment_status !== 'paid') return res.status(402).json({ error: 'El pago del bono aún no se ha completado.', pendiente: true });
+    const b = bonos.bonoDesdeSesion(s, hoyMadrid());
+    res.set('Cache-Control', 'private, no-store');
+    res.json({
+      codigo: b.codigo,
+      servicio: b.servicio,
+      salida: b.salida,
+      salidaEn: b.salidaEn,
+      horas: b.horas,
+      para: b.para,
+      de: b.de,
+      mensaje: b.mensaje,
+      emitido: b.emitido,
+      caduca: b.caduca,
+      idioma: b.idioma,
+      estado: b.estado,
+      maxPersonas: CFG.maxPersonas
+    });
+  } catch (err) {
+    if (err && err.statusCode === 404) return res.status(404).json({ error: 'Bono no encontrado.' });
+    console.error('Error leyendo el bono:', err.message);
+    res.status(502).json({ error: 'No se pudo cargar el bono. Inténtalo en un momento.' });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Panel del patrón: protegido con PANEL_CLAVE
+// ---------------------------------------------------------------------------
+const intentosPanel = new Map(); // ip -> { fallos, desde }
+const VENTANA_INTENTOS_MS = 15 * 60 * 1000;
+
+function exigirClavePanel(req, res, next) {
+  if (!CFG.panelClave) return res.status(503).json({ error: 'El panel no está activado: falta PANEL_CLAVE en el servidor.' });
+  const ip = req.ip || 'desconocida';
+  const reg = intentosPanel.get(ip);
+  if (reg && Date.now() - reg.desde > VENTANA_INTENTOS_MS) intentosPanel.delete(ip);
+  const actual = intentosPanel.get(ip);
+  if (actual && actual.fallos >= 10) return res.status(429).json({ error: 'Demasiados intentos. Espera un rato.' });
+
+  const dada = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+  const a = crypto.createHash('sha256').update(dada).digest();
+  const b = crypto.createHash('sha256').update(CFG.panelClave).digest();
+  if (!dada || !crypto.timingSafeEqual(a, b)) {
+    const r = intentosPanel.get(ip) || { fallos: 0, desde: Date.now() };
+    r.fallos++;
+    intentosPanel.set(ip, r);
+    return res.status(401).json({ error: 'Clave incorrecta.' });
+  }
+  intentosPanel.delete(ip);
+  res.set('Cache-Control', 'private, no-store');
+  next();
+}
+
+// Pagos completados de los últimos 2 años, con caché de 2 minutos.
+const sesionesCache = { t: 0, datos: null };
+const SESIONES_MS = 2 * 60 * 1000;
+
+async function sesionesPagadas({ sinCache = false } = {}) {
+  if (!sinCache && sesionesCache.datos && Date.now() - sesionesCache.t < SESIONES_MS) return sesionesCache.datos;
+  const desde = Math.floor(Date.now() / 1000) - 730 * 86400;
+  const datos = await stripe.checkout.sessions
+    .list({ status: 'complete', created: { gte: desde }, limit: 100, expand: ['data.payment_intent.latest_charge'] })
+    .autoPagingToArray({ limit: 10000 });
+  // Solo lo que ha creado esta web (reservas y bonos).
+  const propias = datos.filter(s => s.metadata && (s.metadata.tipo === 'bono' || s.metadata.servicio));
+  sesionesCache.t = Date.now();
+  sesionesCache.datos = propias;
+  return propias;
+}
+
+app.get('/api/panel/resumen', exigirClavePanel, async (req, res) => {
+  const hoy = hoyMadrid();
+  const mes = String(req.query.mes || hoy.slice(0, 7));
+  if (!panel.RE_MES.test(mes)) return res.status(400).json({ error: 'Mes no válido (YYYY-MM).' });
+  try {
+    const sesiones = await sesionesPagadas({ sinCache: req.query.recargar === '1' });
+    res.json({ ...panel.resumen(sesiones, mes, hoy), modoPrueba: String(env.STRIPE_SECRET_KEY || '').startsWith('sk_test') });
+  } catch (err) {
+    console.error('Panel: error leyendo Stripe:', err.message);
+    res.status(502).json({ error: 'No se pudieron leer los pagos de Stripe.' });
+  }
+});
+
+async function buscarBono(codigoTexto) {
+  const codigo = bonos.normalizarCodigo(codigoTexto);
+  if (!codigo) return { error: 'Código no válido. Tiene esta forma: CEN-XXXX-XXXX.', status: 400 };
+  const sesiones = await sesionesPagadas({ sinCache: true });
+  const s = sesiones.find(x => x.metadata.tipo === 'bono' && x.metadata.codigo === codigo);
+  if (!s) return { error: `No hay ningún bono pagado con el código ${codigo}.`, status: 404 };
+  return { sesion: s, bono: bonos.bonoDesdeSesion(s, hoyMadrid()) };
+}
+
+app.get('/api/panel/bono', exigirClavePanel, async (req, res) => {
+  try {
+    const r = await buscarBono(req.query.codigo);
+    if (r.error) return res.status(r.status).json({ error: r.error });
+    res.json(r.bono);
+  } catch (err) {
+    console.error('Panel: error buscando bono:', err.message);
+    res.status(502).json({ error: 'No se pudo consultar Stripe.' });
+  }
+});
+
+app.post('/api/panel/bono/canjear', exigirClavePanel, async (req, res) => {
+  const deshacer = req.body && req.body.deshacer === true;
+  try {
+    const r = await buscarBono(req.body && req.body.codigo);
+    if (r.error) return res.status(r.status).json({ error: r.error });
+    if (!r.bono.paymentIntent) return res.status(500).json({ error: 'El bono no tiene pago asociado.' });
+    if (!deshacer && r.bono.estado === 'anulado') return res.status(409).json({ error: 'Este bono se devolvió: no se puede canjear.' });
+    if (!deshacer && r.bono.estado === 'canjeado') return res.status(409).json({ error: `Este bono ya se canjeó el ${r.bono.canjeado.slice(0, 10)}.` });
+    const notaFecha = String((req.body && req.body.fechaSalida) || '').trim();
+    // En Stripe, poner un metadato a '' lo borra.
+    await stripe.paymentIntents.update(r.bono.paymentIntent, {
+      metadata: deshacer
+        ? { canjeado: '', canje_salida: '' }
+        : { canjeado: new Date().toISOString(), canje_salida: /^\d{4}-\d{2}-\d{2}$/.test(notaFecha) ? notaFecha : '' }
+    });
+    sesionesCache.t = 0;
+    const tras = await buscarBono(r.bono.codigo);
+    res.json(tras.bono || { ok: true });
+  } catch (err) {
+    console.error('Panel: error canjeando bono:', err.message);
+    res.status(502).json({ error: 'No se pudo actualizar el bono en Stripe.' });
+  }
 });
 
 // ---------------------------------------------------------------------------
