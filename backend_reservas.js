@@ -58,10 +58,22 @@ const FIANZA_POR_PERSONA = 20; // 20€ de fianza
 // 1. ENDPOINT: Crear sesión de pago (Fianza)
 // ==========================================
 app.post('/create-checkout-session', async (req, res) => {  try {
-    const { cliente, fecha, turno, actividad, personas, extras, codigo_promo, total_actividad, resto_efectivo } = req.body;
     
-    const cantidadPersonas = parseInt(personas) || 1;
-    const fianzaTotal = cantidadPersonas * FIANZA_POR_PERSONA;
+const cuerpo = req.body;
+
+const cliente = cuerpo.cliente ?? cuerpo.clientName ?? 'Cliente';
+const fecha = cuerpo.fecha ?? cuerpo.date;
+const turno = cuerpo.turno ?? cuerpo.timeSlot ?? '';
+const actividad = cuerpo.actividad ?? cuerpo.serviceName ?? 'Reserva';
+const personas = cuerpo.personas ?? cuerpo.pax ?? 1;
+const extras = cuerpo.extras;
+const codigo_promo = cuerpo.codigo_promo ?? cuerpo.discountCode ?? 'Ninguno';
+
+const cantidadPersonas = parseInt(personas, 10) || 1;
+const fianzaTotal = cantidadPersonas * FIANZA_POR_PERSONA;
+
+const total_actividad = cuerpo.total_actividad ?? cuerpo.totalActividad ?? cuerpo.fianzaBase ?? fianzaTotal;
+const resto_efectivo = cuerpo.resto_efectivo ?? cuerpo.restoEfectivo ?? 0;
 
     // Crear la sesión en Stripe
     const session = await stripe.checkout.sessions.create({
