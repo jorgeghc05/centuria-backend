@@ -98,7 +98,6 @@ const resto_efectivo = cuerpo.resto_efectivo ?? cuerpo.restoEfectivo ?? 0;
 
     // Crear la sesión en Stripe
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
       mode: 'payment',
       line_items: [{
         price_data: {
