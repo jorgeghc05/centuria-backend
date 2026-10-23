@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#102f3c" name="theme-color"/>
+  <title>Disponibilidad, Reservas y Tarjeta Regalo | Centuria Sea Adventure Málaga</title>
+  <meta content="Consulta fechas disponibles o solicita una Tarjeta Regalo (validez 6 meses) para navegar en barco privado en Málaga. Reserva directa por WhatsApp." name="description"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <link href="styles.css" rel="stylesheet"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Necesito tener licencia náutica para navegar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, todas las salidas de Centuria Sea Adventure se realizan con el patrón propietario a bordo, por lo que no necesitas ninguna titulación ni fianza."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cómo funciona la Tarjeta Regalo y cuánto tiempo dura?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "La Tarjeta Regalo tiene una validez de 6 meses desde su fecha de emisión. Se emite con fecha abierta para que la persona que recibe el regalo elija cuándo navegar."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué ocurre si el día de la salida hace mal tiempo o mala mar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "La seguridad es siempre lo primero. Si el patrón considera que las condiciones del mar no son óptimas, se buscará una nueva fecha sin coste adicional."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body data-page="disponibilidad">
+  <div class="demo-banner" data-i18n="demoBanner">VERSIÓN DEMOSTRACIÓN · Precios, horarios y disponibilidad sujetos a confirmación del patrón</div>
+  
+  <header class="header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">
+        <img src="imagenes/logo-centuria.png" alt="Logotipo de Centuria Sea Adventure" width="56" height="56">
+      </span>
+      <span>CENTURIA <strong>SEA ADVENTURE</strong><small data-i18n="brandSub">MÁLAGA · COSTA DEL SOL</small></span>
+    </a>
+    <div class="header-controls">
+      <div class="lang-switch" role="group" aria-label="Selector de idioma">
+        <button type="button" class="lang-btn active" data-lang="es">ES</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <button aria-expanded="false" aria-label="Abrir menú" class="menu-toggle">☰</button>
+    </div>
+    <nav id="nav">
+      <a href="index.html" data-i18n="navServices">Servicios</a>
+      <a href="barco.html" data-i18n="navBoat">El barco y el patrón</a>
+      <a aria-current="page" href="disponibilidad.html" data-i18n="navAvail">Disponibilidad</a>
+      <a href="contacto.html" data-i18n="navContact">Contacto y reseñas</a>
+      <a class="nav-cta" href="disponibilidad.html" data-i18n="navCta">Consultar fecha →</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="page-heading container">
+      <span class="eyebrow" data-i18n="availPageEyebrow">RESERVA FÁCIL Y SIN INTERMEDIARIOS</span>
+      <h1 data-i18n="availPageTitle">Disponibilidad y Tarjeta Regalo</h1>
+    </div>
+
+    <section class="booking section" id="reservar">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow" data-i18n="bookEyebrow">PLANIFICA TU ESCAPADA EN 1 MINUTO</span>
+            <h2 data-i18n="bookTitle">Elige tu fecha. <em>Nosotros ponemos el mar.</em></h2>
+          </div>
+          <p data-i18n="bookDesc">Selecciona el día en el calendario (o elige la opción de Tarjeta Regalo con fecha abierta y validez de 6 meses) y envíanos tu consulta directa por WhatsApp.</p>
+        </div>
+
+        <div class="booking-steps">
+          <div><strong data-i18n="step1Title">1. Elige fecha o Bono Regalo</strong><span data-i18n="step1Desc">Toca un día o selecciona Tarjeta Regalo (6 meses)</span></div>
+          <div><strong data-i18n="step2Title">2. Personaliza tu plan</strong><span data-i18n="step2Desc">Experiencia, horario y número de personas</span></div>
+          <div><strong data-i18n="step3Title">3. Confirmación con el patrón</strong><span data-i18n="step3Desc">Te respondemos personalmente por WhatsApp</span></div>
+        </div>
+
+        <div class="booking-layout">
+          <div class="calendar-panel">
+            <div class="calendar-header">
+              <button aria-label="Mes anterior" id="prevMonth" type="button">←</button>
+              <h3 id="monthTitle"></h3>
+              <button aria-label="Mes siguiente" id="nextMonth" type="button">→</button>
+            </div>
+            <div class="calendar-weekdays" id="calendarWeekdays">
+              <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+            </div>
+            <div class="calendar-days" id="calendarDays"></div>
+            <p class="calendar-note" data-i18n="calNote">
+              ○ Fecha seleccionable &nbsp; ● Tu fecha elegida<br/>
+              Al tratarse de un único barco exclusivo, confirmamos cada horario personalmente con el patrón antes de zarpar.
+            </p>
+            <div class="weather-guarantee">
+              <strong>⚓ <span data-i18n="weatherTitle">Garantía de Buena Mar:</span></strong>
+              <span data-i18n="weatherDesc">El patrón revisa el parte oficial antes de cada salida. Si el tiempo no permite navegar con seguridad, cambiamos de fecha sin ningún coste.</span>
+            </div>
+          </div>
+
+          <form class="booking-form" id="bookingForm">
+            <div class="form-badge" id="selectedServiceBadge" data-i18n="formBadgeDefault">Solicitud directa sin compromiso</div>
+            <h3 data-i18n="formHeading">Tu próxima aventura</h3>
+            
+            <label for="service" data-i18n="labelService">Experiencia o Tarjeta Regalo</label>
+            <select id="service" required=""></select>
+
+            <div class="gift-info-banner" id="giftInfoBanner" hidden>
+              <strong data-i18n="giftBannerTitle">🎁 Modalidad Tarjeta Regalo activada (Caducidad: 6 meses)</strong>
+              <p data-i18n="giftBannerDesc">Puedes elegir como fecha el día en que quieres entregar el regalo (o cualquier fecha orientativa). El bono tendrá una validez de 6 meses con fecha abierta para navegar.</p>
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label for="date" id="dateLabel" data-i18n="labelDate">Fecha deseada</label>
+                <input id="date" required="" type="date"/>
+              </div>
+              <div>
+                <label for="timeSlot" data-i18n="labelSlot">Horario o modalidad</label>
+                <select id="timeSlot"></select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label for="people" data-i18n="labelPeople">Personas (máx. 6)</label>
+                <input id="people" max="6" min="1" required="" type="number" value="2"/>
+              </div>
+              <div>
+                <label for="name" data-i18n="labelName">Tu nombre</label>
+                <input id="name" maxlength="80" placeholder="¿Cómo te llamas?" required="" type="text"/>
+              </div>
+            </div>
+
+            <label for="notes" data-i18n="labelNotes">Cuéntanos tu idea o para quién es el regalo (opcional)</label>
+            <textarea id="notes" placeholder="¿Celebráis un cumpleaños, es para una Tarjeta Regalo, os apetece pescar o ir hacia Maro?" rows="3"></textarea>
+            
+            <button class="btn primary full" type="submit" data-i18n="formSubmit">Consultar por WhatsApp ↗</button>
+            <p class="form-note" data-i18n="formNote">Se abrirá WhatsApp con tu solicitud lista para enviar al patrón. No se realiza ningún cobro automático en la web.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq section container reveal">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow" data-i18n="faqEyebrow">TODO CLARO ANTES DE ZARPAR</span>
+          <h2 data-i18n="faqTitle">Preguntas frecuentes.</h2>
+        </div>
+        <p data-i18n="faqDesc">Resolvemos las dudas más habituales para que vengáis al puerto con total tranquilidad.</p>
+      </div>
+      <div class="faq-list">
+        <details open>
+          <summary data-i18n="faq1Q">¿Necesito tener licencia o experiencia para navegar?</summary>
+          <p data-i18n="faq1A">En absoluto. Todas las salidas se realizan con el patrón propietario a bordo. No tienes que preocuparte por maniobras, fondeos ni fianzas de alquiler; solo de disfrutar del mar.</p>
+        </details>
+        <details>
+          <summary data-i18n="faqGiftQ">¿Cómo funciona la Tarjeta Regalo y cuándo caduca?</summary>
+          <p data-i18n="faqGiftA">Es muy sencillo: nos solicitas el bono por WhatsApp indicando el nombre de la persona afortunada y la experiencia que quieres regalar. La Tarjeta Regalo tiene una caducidad de 6 meses desde su fecha de emisión y queda con fecha abierta para que quien la reciba reserve el día que mejor le venga.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq2Q">¿Cuántas personas pueden venir y el barco es privado?</summary>
+          <p data-i18n="faq2A">Sí, la salida es 100% privada para vuestro grupo (nunca mezclamos clientes). La capacidad autorizada en esta demostración es de hasta 6 pasajeros más el patrón.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq3Q">¿Dónde nos encontramos el día de la salida?</summary>
+          <p data-i18n="faq3A">Nuestro puerto base es el Real Club El Candado (Málaga Este). Al confirmar tu reserva te enviaremos la ubicación exacta de encuentro para recibirte en la entrada del pantalán.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq4Q">¿Qué pasa si hace mal tiempo o levanta viento?</summary>
+          <p data-i18n="faq4A">La seguridad y vuestra comodidad son lo primero. El patrón revisa el parte meteorológico antes de cada salida; si las condiciones del mar no permiten disfrutar con seguridad, cambiamos la fecha o acordamos la mejor alternativa sin compromiso.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq5Q">¿Puedo llevar nuestra propia comida y bebida?</summary>
+          <p data-i18n="faq5A">Por supuesto. Podéis traer vuestros aperitivos, bebidas y hielo para disfrutar a bordo. Consúltanos al reservar para indicarte el espacio disponible en nevera y las recomendaciones para navegar cómodos.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <strong>CENTURIA SEA ADVENTURE</strong>
+        <small data-i18n="footerSub">Experiencias náuticas privadas con patrón en Málaga · Puerto El Candado</small>
+      </div>
+      <div class="footer-links">
+        <a href="index.html" data-i18n="navServices">Servicios</a>
+        <a href="barco.html" data-i18n="navBoat">El barco y el patrón</a>
+        <a href="disponibilidad.html" data-i18n="navAvail">Disponibilidad</a>
+        <a href="contacto.html" data-i18n="navContact">Contacto y reseñas</a>
+      </div>
+      <div>
+        <a href="disponibilidad.html" data-i18n="backTop">Volver arriba ↑</a>
+        <span>© <span id="year"></span> Centuria Sea Adventure</span>
+      </div>
+    </div>
+    <p class="footer-disclaimer" data-i18n="footerDisclaimer">Sitio de demostración no oficial. No introducir pagos ni considerar confirmada una reserva. Fotografías del proyecto, pendientes de revisión.</p>
+  </footer>
+
+  <a aria-label="Consultar por WhatsApp" class="floating-wa" href="#" id="floatingWhatsapp">✆ <span data-i18n="waFloating">Hablar con nosotros</span></a>
+  <script defer="" src="script.js"></script>
+</body>
+</html>
