@@ -47,7 +47,18 @@ const CFG = {
 
 const stripe = Stripe(env.STRIPE_SECRET_KEY);
 
-const calendar = crearCalendario(env);
+// Si la clave de Google está mal, el servidor arranca igual (pagos, reseñas…)
+// y el calendario responde con error, que se ve en los Logs de Render.
+let calendar;
+try {
+  calendar = crearCalendario(env);
+} catch (err) {
+  console.error(`⚠ ${err.message}`);
+  const sinCalendario = async () => {
+    throw err;
+  };
+  calendar = { events: { list: sinCalendario, insert: sinCalendario } };
+}
 const especiales = EVENTOS.map(e => buscarServicio(e.id));
 
 // ---------------------------------------------------------------------------
