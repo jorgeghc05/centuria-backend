@@ -20,7 +20,7 @@ const Stripe = require('stripe');
 
 const { SERVICIOS, EVENTOS, TURNOS, RE_HORA, buscarServicio, resolverHorario, precioTotal } = require('./lib/catalogo');
 const { calcular, comprobarHueco, aplicarRetenciones, desdeGoogle, sumarDias } = require('./lib/disponibilidad');
-const { crearCalendario, idsCalendarios, listarEventos } = require('./lib/google');
+const { crearCalendario, credencialesCuentaServicio, idsCalendarios, listarEventos } = require('./lib/google');
 
 const env = process.env;
 const CFG = {
@@ -57,7 +57,7 @@ try {
   const sinCalendario = async () => {
     throw err;
   };
-  calendar = { events: { list: sinCalendario, insert: sinCalendario } };
+  calendar = { events: { list: sinCalendario, insert: sinCalendario }, calendars: { get: sinCalendario } };
 }
 const especiales = EVENTOS.map(e => buscarServicio(e.id));
 
@@ -161,6 +161,38 @@ app.use(express.json({ limit: '20kb' }));
 
 app.get('/salud', (_req, res) => res.json({ ok: true }));
 
+// Diagnóstico de la conexión con Google: qué cuenta usa, qué calendarios
+// busca y si los ve. No enseña claves.
+app.get('/api/diagnostico', async (_req, res) => {
+  const tapar = id => (id.length > 16 ? `${id.slice(0, 6)}…${id.slice(-28)}` : id);
+  const salida = { cuenta: null, origenClave: null, calendarios: [] };
+  try {
+    const cred = credencialesCuentaServicio(env);
+    salida.cuenta = cred ? cred.client_email : '(sin cuenta de servicio: se usa OAuth)';
+    salida.origenClave = require('fs').existsSync('/etc/secrets/google-service-account.json')
+      ? 'Secret File de Render'
+      : env.GOOGLE_SERVICE_ACCOUNT_JSON
+        ? 'variable GOOGLE_SERVICE_ACCOUNT_JSON'
+        : 'ninguna';
+  } catch (err) {
+    salida.cuenta = `ERROR: ${err.message}`;
+  }
+  for (const [nombre, id] of [
+    ['GOOGLE_CALENDAR_DISPONIBILIDAD', CFG.calendarioDisponibilidad],
+    ['GOOGLE_CALENDAR_ID (reservas)', CFG.calendarioReservas]
+  ]) {
+    const info = { variable: nombre, id: tapar(id), largo: id.length, espaciosOComillas: /^\s|\s$|["']/.test(id) };
+    try {
+      const { data } = await calendar.calendars.get({ calendarId: id.trim() });
+      info.resultado = `OK: «${data.summary}»`;
+    } catch (err) {
+      info.resultado = `ERROR: ${err.message}`;
+    }
+    salida.calendarios.push(info);
+  }
+  res.json(salida);
+});
+
 app.get('/api/disponibilidad', async (req, res) => {
   const desde = String(req.query.desde || '');
   const hasta = String(req.query.hasta || '');
@@ -175,7 +207,7 @@ app.get('/api/disponibilidad', async (req, res) => {
     res.set('Cache-Control', 'public, max-age=30');
     res.json({ desde, hasta, dias });
   } catch (err) {
-    console.error('Error leyendo Google Calendar:', err.message);
+    console.error(`Error leyendo Google Calendar (${CFG.calendarioDisponibilidad} / ${CFG.calendarioReservas}):`, err.message, '-> abre /api/diagnostico');
     res.status(502).json({ error: 'No se pudo consultar el calendario.' });
   }
 });
