@@ -32,9 +32,29 @@ const { google } = require('googleapis');
 const app = express();
 
 // Configuración de CORS para permitir peticiones desde tu web
-app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
 
-// IMPORTANTE: Para el webhook de Stripe necesitamos el "raw body", para el resto JSON.
+const origenesPermitidos = [
+  'https://centuria1710.netlify.app',
+  /^https:\/\/[a-z0-9-]+--centuria1710\.netlify\.app$/
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (
+      !origin ||
+      origenesPermitidos.some((permitido) =>
+        permitido instanceof RegExp
+          ? permitido.test(origin)
+          : permitido === origin
+      )
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origen no permitido por CORS: ' + origin));
+    }
+  }
+}));
+
 app.use((req, res, next) => {
   if (req.originalUrl === '/api/webhook') {
     next();
@@ -42,6 +62,7 @@ app.use((req, res, next) => {
     express.json()(req, res, next);
   }
 });
+
 
 // Configuración de la API de Google Calendar usando OAuth2
 const oauth2Client = new google.auth.OAuth2(
