@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://centuriaseaadventure.com/sitemap.xml
+Sitemap: https://proud-fire-ba10.jorgeghc05.workers.dev/sitemap.xml

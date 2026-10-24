@@ -104,13 +104,13 @@ img { max-width: 100%; display: block; }
 .nav a:not(.btn):hover::after, .nav a[aria-current='page']:not(.btn)::after { transform: scaleX(1); }
 .nav a.btn { color: var(--white); padding: 9px 16px; }
 .lang { display: flex; border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
-.lang button {
-  display: inline-flex; align-items: center; gap: 6px;
+.lang button, .lang a {
+  display: inline-flex; text-decoration: none; align-items: center; gap: 6px;
   font: inherit; font-size: 0.78rem; font-weight: 700;
   border: 0; background: var(--white); padding: 6px 9px; cursor: pointer; color: var(--muted);
 }
 .lang .flag { display: block; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12); border-radius: 1px; }
-.lang button[aria-pressed='true'] { background: var(--abyss); color: var(--white); }
+.lang button[aria-pressed='true'], .lang a[aria-current='page'] { background: var(--abyss); color: var(--white); }
 .menu-btn { display: none; font: inherit; font-weight: 600; background: none; border: 1px solid var(--line); border-radius: 3px; padding: 7px 12px; color: var(--abyss); }
 
 /* ---------- Iconos y redes ---------- */
@@ -837,8 +837,8 @@ html.sin-scroll { overflow: hidden; }
   .top .wrap { gap: 12px; height: 64px; }
   .menu-btn { display: block; }
   .lang { margin-left: auto; }
-  .lang button span { display: none; }
-  .lang button { padding: 7px 8px; }
+  .lang button span, .lang a span { display: none; }
+  .lang button, .lang a { padding: 7px 8px; }
   .nav {
     display: none; position: absolute; top: 64px; left: 0; right: 0;
     background: var(--white); border-bottom: 1px solid var(--line);
