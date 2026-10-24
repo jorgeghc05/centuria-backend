@@ -1,0 +1,19 @@
+Copia aquí las fotos con estos nombres exactos:
+
+logo-centuria.png
+centuria_mar.jpg
+centuria_cabina.jpeg
+atardecer_penyon_cuervo.jpg
+cascada_maro.jpg
+chicas_tabla_centuria.jpg
+chicas_flotador_centuria.jpg
+moet_centuria.jpeg
+delfines.jpg            <- nueva, para el avistamiento de delfines
+
+Mejor si cada foto pesa menos de 400 KB (se pueden comprimir en squoosh.app).
+
+Fotos de cada salida (los puntitos del carrusel):
+se eligen en web/js/datos.js, en el campo "fotos" de cada salida. Para añadir
+más, copia la foto aquí (por ejemplo imagenes/pesca-2.jpg) y añade su ruta a la lista:
+  fotos: ['imagenes/centuria_cabina.jpeg', 'imagenes/pesca-2.jpg'],
+Mejor horizontales (proporción 3:2) y de menos de 400 KB.

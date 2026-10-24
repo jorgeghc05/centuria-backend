@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#12303d">
+  <title>Panel · Centuria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --fondo: #f3f1ec;
+      --carta: #ffffff;
+      --tinta: #1b2a30;
+      --tenue: #63747a;
+      --linea: #e2ddd2;
+      --mar: #12303d;
+      --serie-1: #1d6a85;   /* señales */
+      --serie-2: #e0894a;   /* bonos */
+      --ok: #18794e;
+      --ok-fondo: #e3f3ea;
+      --aviso: #8a5a00;
+      --aviso-fondo: #fdf3dc;
+      --mal: #a2281a;
+      --mal-fondo: #fbe9e6;
+      --radio: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --fondo: #0f1a1f; --carta: #16252c; --tinta: #e6eef0; --tenue: #93a6ac; --linea: #26383f; --mar: #9fd0e0;
+        --serie-1: #4fa3c2; --serie-2: #e9a06a; --ok: #6fd3a0; --ok-fondo: #173a2a; --aviso: #f0c46a; --aviso-fondo: #3a2f14; --mal: #f19a8c; --mal-fondo: #3d1d18;
+      }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--fondo); color: var(--tinta); font: 15px/1.5 'DM Sans', system-ui, sans-serif; }
+    button, input { font: inherit; color: inherit; }
+    a { color: var(--serie-1); }
+    [hidden] { display: none !important; }
+    .num { font-variant-numeric: tabular-nums; }
+
+    .barra { background: #12303d; color: #fff; }
+    .barra .dentro { max-width: 1180px; margin: 0 auto; padding: 12px 16px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .barra h1 { font-size: 17px; margin: 0; letter-spacing: .02em; }
+    .barra h1 span { opacity: .7; font-weight: 400; }
+    .mes { display: flex; align-items: center; gap: 6px; }
+    .mes button, .salir { background: rgba(255,255,255,.12); border: 0; color: #fff; border-radius: 8px; padding: 6px 11px; cursor: pointer; }
+    .mes button:hover, .salir:hover { background: rgba(255,255,255,.22); }
+    .mes strong { min-width: 140px; text-align: center; text-transform: capitalize; }
+
+    main { max-width: 1180px; margin: 0 auto; padding: 20px 16px 48px; display: grid; gap: 18px; }
+    .carta { background: var(--carta); border: 1px solid var(--linea); border-radius: var(--radio); padding: 18px; min-width: 0; }
+    .carta h2 { font-size: 15px; margin: 0 0 12px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+    .carta h2 small { font-weight: 400; color: var(--tenue); font-size: 13px; }
+    .dos { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+    @media (max-width: 900px) { .dos { grid-template-columns: 1fr; } }
+
+    .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    @media (max-width: 860px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .kpi { background: var(--carta); border: 1px solid var(--linea); border-radius: var(--radio); padding: 14px 16px; }
+    .kpi span { display: block; color: var(--tenue); font-size: 13px; }
+    .kpi strong { display: block; font-size: 26px; line-height: 1.2; margin: 2px 0; }
+    .kpi small { color: var(--tenue); font-size: 12.5px; }
+
+    .grafico { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; align-items: end; height: 170px; padding-top: 18px; }
+    .col { display: flex; flex-direction: column; align-items: stretch; height: 100%; justify-content: flex-end; position: relative; cursor: default; }
+    .col .b { border-radius: 4px 4px 0 0; min-height: 0; }
+    .col .b + .b { border-radius: 0; }
+    .col .s1 { background: var(--serie-1); }
+    .col .s2 { background: var(--serie-2); }
+    .col .s2 + .s1 { border-radius: 0; }
+    .col.actual::after { content: ''; position: absolute; left: -3px; right: -3px; top: 0; bottom: -2px; border: 1.5px solid var(--tenue); border-radius: 6px; opacity: .35; pointer-events: none; }
+    .col .v { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 11px; color: var(--tenue); white-space: nowrap; }
+    .ejes { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; margin-top: 6px; font-size: 11.5px; color: var(--tenue); text-align: center; text-transform: capitalize; }
+    .leyenda { display: flex; gap: 16px; font-size: 13px; color: var(--tenue); margin-top: 10px; }
+    .leyenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+    .tip { position: fixed; pointer-events: none; background: var(--tinta); color: var(--carta); font-size: 12.5px; padding: 7px 10px; border-radius: 8px; z-index: 5; white-space: nowrap; }
+
+    .lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+    .fila { display: grid; grid-template-columns: 74px minmax(0, 1fr) auto; gap: 12px; padding: 10px 4px; border-bottom: 1px solid var(--linea); align-items: center; }
+    .fila:last-child { border-bottom: 0; }
+    .fila .cuando { font-size: 13px; color: var(--tenue); line-height: 1.3; }
+    .fila .cuando b { display: block; color: var(--tinta); font-size: 15px; }
+    .fila .quien { min-width: 0; }
+    .fila .quien b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #bonos .fila .quien b, #resultadoBono .fila .quien b { white-space: normal; }
+    .fila .quien small { color: var(--tenue); display: block; overflow: hidden; text-overflow: ellipsis; }
+    .fila .dinero { text-align: right; font-size: 13px; color: var(--tenue); }
+    .fila .dinero b { display: block; color: var(--tinta); font-size: 14px; }
+    .contacto { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+    .contacto a { font-size: 12.5px; text-decoration: none; border: 1px solid var(--linea); border-radius: 6px; padding: 1px 7px; }
+    .vacio { color: var(--tenue); font-size: 14px; padding: 8px 0; }
+
+    .ranking { display: grid; gap: 9px; }
+    .ranking .r { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; font-size: 14px; }
+    .ranking .barra-r { grid-column: 1 / -1; height: 6px; background: var(--linea); border-radius: 3px; overflow: hidden; }
+    .ranking .barra-r i { display: block; height: 100%; background: var(--serie-1); border-radius: 3px; }
+
+    .estado { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+    .estado.activo { background: var(--ok-fondo); color: var(--ok); }
+    .estado.canjeado { background: var(--linea); color: var(--tenue); }
+    .estado.caducado, .estado.anulado { background: var(--mal-fondo); color: var(--mal); }
+    .estado.cancelada { background: var(--mal-fondo); color: var(--mal); }
+    .bonos-busca { display: flex; gap: 8px; margin-bottom: 12px; }
+    .bonos-busca input { flex: 1; min-width: 0; border: 1px solid var(--linea); background: var(--fondo); border-radius: 8px; padding: 8px 11px; text-transform: uppercase; }
+    .btn { border: 1px solid var(--linea); background: var(--carta); border-radius: 8px; padding: 7px 12px; cursor: pointer; font-weight: 600; font-size: 13.5px; }
+    .btn:hover { border-color: var(--tenue); }
+    .btn.prim { background: #12303d; color: #fff; border-color: #12303d; }
+    .btn:disabled { opacity: .6; cursor: wait; }
+    .resultado { margin-bottom: 10px; }
+
+    .tabla-envoltura { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { text-align: left; font-weight: 600; color: var(--tenue); font-size: 12.5px; padding: 6px 8px; border-bottom: 1px solid var(--linea); white-space: nowrap; }
+    td { padding: 8px; border-bottom: 1px solid var(--linea); vertical-align: top; }
+    td.d, th.d { text-align: right; }
+    td.nw, td.d { white-space: nowrap; }
+    tr:last-child td { border-bottom: 0; }
+
+    .aviso { padding: 10px 14px; border-radius: 10px; font-size: 14px; }
+    .aviso.prueba { background: var(--aviso-fondo); color: var(--aviso); }
+    .aviso.error { background: var(--mal-fondo); color: var(--mal); }
+    .notas { font-size: 13px; color: var(--tenue); }
+    .notas ul { margin: 6px 0 0; padding-left: 18px; }
+
+    .entrar { min-height: 100vh; display: grid; place-items: center; padding: 20px; }
+    .entrar form { width: 100%; max-width: 340px; background: var(--carta); border: 1px solid var(--linea); border-radius: 14px; padding: 26px; display: grid; gap: 12px; }
+    .entrar h1 { margin: 0; font-size: 20px; }
+    .entrar input { border: 1px solid var(--linea); background: var(--fondo); border-radius: 8px; padding: 10px 12px; }
+    .entrar .btn { padding: 11px; font-size: 15px; }
+    .cargando { opacity: .55; transition: opacity .2s; }
+  </style>
+</head>
+<body>
+  <!-- Entrar -->
+  <div class="entrar" id="pantallaEntrar" hidden>
+    <form id="formEntrar">
+      <h1>Panel de Centuria</h1>
+      <label for="clave" class="notas">Clave del panel</label>
+      <input type="password" id="clave" autocomplete="current-password" required>
+      <div class="aviso error" id="errorEntrar" hidden></div>
+      <button class="btn prim" type="submit" id="botonEntrar">Entrar</button>
+    </form>
+  </div>
+
+  <!-- Panel -->
+  <div id="pantallaPanel" hidden>
+    <header class="barra">
+      <div class="dentro">
+        <h1>Centuria <span>· panel</span></h1>
+        <div class="mes">
+          <button type="button" id="mesAnt" aria-label="Mes anterior">‹</button>
+          <strong id="mesNombre"></strong>
+          <button type="button" id="mesSig" aria-label="Mes siguiente">›</button>
+          <button type="button" id="recargar" title="Volver a leer de Stripe">↻</button>
+        </div>
+        <button type="button" class="salir" id="salir">Salir</button>
+      </div>
+    </header>
+
+    <main id="contenido">
+      <div class="aviso prueba" id="avisoPrueba" hidden>Modo de prueba de Stripe: estos datos son de pagos de prueba, no reales.</div>
+      <div class="aviso error" id="errorPanel" hidden></div>
+
+      <section class="kpis" id="kpis"></section>
+
+      <div class="dos">
+        <section class="carta">
+          <h2>Próximas salidas <small>14 días</small></h2>
+          <ul class="lista" id="proximas"></ul>
+        </section>
+        <section class="carta">
+          <h2>Cobrado online <small>últimos 12 meses</small></h2>
+          <div class="grafico" id="grafico"></div>
+          <div class="ejes" id="ejes"></div>
+          <div class="leyenda"><span><i style="background:var(--serie-1)"></i>Señales</span><span><i style="background:var(--serie-2)"></i>Bonos</span></div>
+        </section>
+      </div>
+
+      <section class="carta">
+        <h2>Salidas del mes <small id="salidasMesNota"></small></h2>
+        <div class="tabla-envoltura"><table id="tablaSalidas"></table></div>
+      </section>
+
+      <div class="dos">
+        <section class="carta">
+          <h2>Bonos regalo <small id="bonosNota"></small></h2>
+          <form class="bonos-busca" id="formBono">
+            <input id="codigoBono" placeholder="CEN-XXXX-XXXX" aria-label="Código del bono" autocomplete="off">
+            <button class="btn" type="submit">Comprobar</button>
+          </form>
+          <div class="resultado" id="resultadoBono"></div>
+          <ul class="lista" id="bonos"></ul>
+        </section>
+        <div style="display:grid; gap:18px; align-content:start">
+          <section class="carta">
+            <h2>Más pedidas <small>últimos 12 meses</small></h2>
+            <div class="ranking" id="ranking"></div>
+          </section>
+          <section class="carta">
+            <h2>Este mes</h2>
+            <div id="extra" class="notas"></div>
+          </section>
+          <section class="carta notas">
+            <strong>Qué cuenta este panel</strong>
+            <ul>
+              <li>Solo lo que entra por la web con pago en Stripe. Las reservas que el patrón apunta a mano en su calendario no salen aquí.</li>
+              <li>Las salidas cuentan por el día de la salida; el dinero cobrado, por el día del pago.</li>
+              <li>Una reserva con la señal devuelta entera cuenta como cancelada y no suma.</li>
+              <li>Detalle de cada pago y devoluciones: <a href="https://dashboard.stripe.com/payments" target="_blank" rel="noopener">Stripe</a>. Visitas a la web: Cloudflare Web Analytics.</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="tip" id="tip" hidden></div>
+
+  <script>
+  (function () {
+    'use strict';
+    var API = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? 'http://localhost:3000' : 'https://centuria-backend-xef0.onrender.com';
+    var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    var DIAS = ['dom','lun','mar','mié','jue','vie','sáb'];
+    var $ = function (id) { return document.getElementById(id); };
+    var clave = null;
+    try { clave = sessionStorage.getItem('panelClave'); } catch (e) {}
+    var hoyMadrid = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid' }).format(new Date());
+    var mes = hoyMadrid.slice(0, 7);
+    var datos = null;
+
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function euros(n, dec) { return (n || 0).toLocaleString('es-ES', { minimumFractionDigits: dec ? 2 : 0, maximumFractionDigits: dec ? 2 : 0 }) + ' €'; }
+    function nombreMes(m, corto) { var p = m.split('-'); var n = MESES[Number(p[1]) - 1]; return corto ? n.slice(0, 3) : n + ' ' + p[0]; }
+    function sumarMeses(m, n) { var p = m.split('-').map(Number); var d = new Date(Date.UTC(p[0], p[1] - 1 + n, 1)); return d.toISOString().slice(0, 7); }
+    function diaCorto(iso) { var d = new Date(iso + 'T12:00:00Z'); return { dia: d.getUTCDate() + ' ' + MESES[d.getUTCMonth()].slice(0, 3), sem: DIAS[d.getUTCDay()] }; }
+    function fecha(iso) { if (!iso) return ''; var p = iso.slice(0, 10).split('-'); return Number(p[2]) + ' ' + MESES[Number(p[1]) - 1].slice(0, 3) + ' ' + p[0]; }
+    function wa(tel) { return 'https://wa.me/' + String(tel).replace(/[^\d]/g, ''); }
+
+    function llamar(ruta, opciones) {
+      opciones = opciones || {};
+      opciones.headers = Object.assign({ Authorization: 'Bearer ' + clave }, opciones.headers || {});
+      return fetch(API + ruta, opciones).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          if (r.status === 401) { salir('Clave incorrecta.'); throw new Error('401'); }
+          if (!r.ok) throw new Error(j.error || 'Error ' + r.status);
+          return j;
+        });
+      });
+    }
+
+    function salir(msg) {
+      clave = null;
+      try { sessionStorage.removeItem('panelClave'); } catch (e) {}
+      $('pantallaPanel').hidden = true;
+      $('pantallaEntrar').hidden = false;
+      $('errorEntrar').textContent = msg || '';
+      $('errorEntrar').hidden = !msg;
+      $('clave').value = '';
+      $('clave').focus();
+    }
+
+    function cargar(recargar) {
+      $('mesNombre').textContent = nombreMes(mes);
+      $('contenido').classList.add('cargando');
+      $('errorPanel').hidden = true;
+      return llamar('/api/panel/resumen?mes=' + mes + (recargar ? '&recargar=1' : '')).then(function (d) {
+        datos = d;
+        $('pantallaEntrar').hidden = true;
+        $('pantallaPanel').hidden = false;
+        pintar(d);
+      }).catch(function (e) {
+        if (e.message === '401') return;
+        $('pantallaEntrar').hidden = true;
+        $('pantallaPanel').hidden = false;
+        $('errorPanel').textContent = e.message === 'Failed to fetch'
+          ? 'No se pudo conectar con el servidor. Si estaba dormido tarda unos segundos en despertar: dale a ↻.'
+          : e.message;
+        $('errorPanel').hidden = false;
+      }).then(function () { $('contenido').classList.remove('cargando'); });
+    }
+
+    function kpi(etq, valor, nota) {
+      return '<div class="kpi"><span>' + esc(etq) + '</span><strong class="num">' + valor + '</strong><small>' + nota + '</small></div>';
+    }
+
+    function pintar(d) {
+      var k = d.kpis;
+      $('avisoPrueba').hidden = !d.modoPrueba;
+      $('kpis').innerHTML =
+        kpi('Salidas del mes', k.salidas, k.personas + ' personas') +
+        kpi('Facturación de esas salidas', euros(k.facturacion), euros(k.senales) + ' online · ' + euros(k.restoEfectivo) + ' el día') +
+        kpi('Cobrado online este mes', euros(k.cobradoOnline), 'señales y bonos pagados en ' + nombreMes(d.mes, true)) +
+        kpi('Bonos sin canjear', k.bonosPendientes, euros(k.bonosPendientesImporte) + ' en salidas por hacer');
+
+      // Próximas
+      $('proximas').innerHTML = d.proximas.length ? d.proximas.map(filaSalida).join('') : '<li class="vacio">Nada reservado por la web en los próximos 14 días.</li>';
+
+      // Gráfico
+      var max = Math.max.apply(null, d.serie.map(function (s) { return s.senales + s.bonos; }).concat([1]));
+      $('grafico').innerHTML = d.serie.map(function (s) {
+        var tot = s.senales + s.bonos;
+        return '<div class="col' + (s.mes === d.mes ? ' actual' : '') + '" data-mes="' + s.mes + '" tabindex="0">' +
+          (tot ? '<span class="v num">' + Math.round(tot) + '</span>' : '') +
+          '<div class="b s2" style="height:' + (s.bonos / max * 100) + '%"></div>' +
+          '<div class="b s1" style="height:' + (s.senales / max * 100) + '%"></div></div>';
+      }).join('');
+      $('ejes').innerHTML = d.serie.map(function (s) { return '<span>' + nombreMes(s.mes, true) + '</span>'; }).join('');
+
+      // Tabla del mes
+      $('salidasMesNota').textContent = d.salidas.length ? d.salidas.length + ' · ' + nombreMes(d.mes) : '';
+      $('tablaSalidas').innerHTML = d.salidas.length
+        ? '<thead><tr><th>Día</th><th>Hora</th><th>Salida</th><th>Cliente</th><th class="d">Pers.</th><th>Extras / notas</th><th class="d">Total</th><th class="d">Resto el día</th></tr></thead><tbody>' +
+          d.salidas.map(function (r) {
+            var c = diaCorto(r.fecha);
+            return '<tr><td class="nw">' + c.sem + ' ' + c.dia + '</td><td class="num nw">' + esc(r.inicio) + (r.fin ? '–' + esc(r.fin) : '') + '</td><td>' + esc(r.salida) + '</td>' +
+              '<td>' + esc(r.nombre) + (r.telefono ? '<div class="contacto"><a href="tel:' + esc(r.telefono) + '">' + esc(r.telefono) + '</a><a href="' + wa(r.telefono) + '" target="_blank" rel="noopener">WhatsApp</a></div>' : '') + '</td>' +
+              '<td class="d num">' + r.personas + '</td><td class="notas">' + esc([r.extras, r.descuento && 'código ' + r.descuento, r.notas].filter(Boolean).join(' · ') || '—') + '</td>' +
+              '<td class="d num">' + (r.precio != null ? euros(r.precio) : '—') + '</td><td class="d num"><b>' + (r.resto != null ? euros(r.resto) : '—') + '</b></td></tr>';
+          }).join('') + '</tbody>'
+        : '<tbody><tr><td class="vacio">No hay salidas pagadas por la web en ' + nombreMes(d.mes) + '.</td></tr></tbody>';
+
+      // Ranking
+      var maxR = d.porSalida.length ? d.porSalida[0].veces : 1;
+      $('ranking').innerHTML = d.porSalida.length ? d.porSalida.map(function (r) {
+        return '<div class="r"><span>' + esc(r.salida) + '</span><span class="num">' + r.veces + ' · ' + r.personas + ' pers.</span><div class="barra-r"><i style="width:' + (r.veces / maxR * 100) + '%"></i></div></div>';
+      }).join('') : '<div class="vacio">Aún no hay salidas.</div>';
+
+      // Extra
+      var linea = function (a, b) { return '<div style="display:flex;justify-content:space-between;gap:10px;padding:3px 0"><span>' + a + '</span><b class="num">' + b + '</b></div>'; };
+      $('extra').innerHTML =
+        linea('Reservas hechas en ' + nombreMes(d.mes, true), k.reservasHechas) +
+        linea('Canceladas (señal devuelta)', k.canceladas) +
+        linea('Antelación media al reservar', k.antelacionMedia == null ? '—' : k.antelacionMedia + ' días') +
+        linea('Bonos vendidos', k.bonosVendidos + ' · ' + euros(k.bonosImporte)) +
+        (d.descuentos.length ? linea('Códigos de descuento', d.descuentos.map(function (x) { return esc(x.codigo) + ' ×' + x.veces; }).join(', ')) : '');
+
+      // Bonos
+      var activos = d.bonos.filter(function (b) { return b.estado === 'activo'; }).length;
+      $('bonosNota').textContent = d.bonos.length ? activos + ' activos de ' + d.bonos.length : '';
+      $('bonos').innerHTML = d.bonos.length ? d.bonos.slice(0, 30).map(filaBono).join('') : '<li class="vacio">Todavía no se ha vendido ningún bono por la web.</li>';
+    }
+
+    function filaSalida(r) {
+      var c = diaCorto(r.fecha);
+      return '<li class="fila"><div class="cuando"><b>' + c.dia + '</b>' + c.sem + ' · ' + esc(r.inicio) + '</div>' +
+        '<div class="quien"><b>' + esc(r.nombre) + ' · ' + r.personas + ' pers.</b><small>' + esc(r.salida) + (r.extras ? ' · ' + esc(r.extras) : '') + '</small>' +
+        (r.telefono ? '<div class="contacto"><a href="tel:' + esc(r.telefono) + '">Llamar</a><a href="' + wa(r.telefono) + '" target="_blank" rel="noopener">WhatsApp</a></div>' : '') + '</div>' +
+        '<div class="dinero">resto<b class="num">' + (r.resto != null ? euros(r.resto) : '—') + '</b></div></li>';
+    }
+
+    function filaBono(b) {
+      var accion = b.estado === 'activo'
+        ? '<button class="btn" data-canjear="' + esc(b.codigo) + '">Canjear</button>'
+        : b.estado === 'canjeado' ? '<button class="btn" data-deshacer="' + esc(b.codigo) + '" title="Deshacer el canje">Deshacer</button>' : '';
+      return '<li class="fila" style="grid-template-columns:minmax(0,1fr) auto">' +
+        '<div class="quien"><b><span class="num">' + esc(b.codigo) + '</span> · ' + esc(b.salida) + '</b>' +
+        '<small>Para ' + esc(b.para) + ' · de ' + esc(b.de) + ' · ' + euros(b.importe) + ' · vendido ' + fecha(b.creado) + ' · caduca ' + fecha(b.caduca) +
+        (b.canjeado ? ' · canjeado ' + fecha(b.canjeado) : '') + '</small></div>' +
+        '<div style="display:flex;gap:8px;align-items:center"><span class="estado ' + esc(b.estado) + '">' + esc(b.estado) + '</span>' + accion + '</div></li>';
+    }
+
+    function canjear(codigo, deshacer, boton) {
+      if (!deshacer && !confirm('¿Marcar el bono ' + codigo + ' como canjeado? Hazlo cuando ya tenga fecha cerrada con el patrón.')) return;
+      if (boton) boton.disabled = true;
+      llamar('/api/panel/bono/canjear', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ codigo: codigo, deshacer: !!deshacer }) })
+        .then(function () { $('resultadoBono').innerHTML = ''; return cargar(true); })
+        .catch(function (e) { if (e.message !== '401') alert(e.message); if (boton) boton.disabled = false; });
+    }
+
+    // ----- eventos -----
+    $('formEntrar').addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      clave = $('clave').value;
+      try { sessionStorage.setItem('panelClave', clave); } catch (e) {}
+      $('botonEntrar').disabled = true;
+      cargar().then(function () { $('botonEntrar').disabled = false; });
+    });
+    $('salir').addEventListener('click', function () { salir(); });
+    $('mesAnt').addEventListener('click', function () { mes = sumarMeses(mes, -1); cargar(); });
+    $('mesSig').addEventListener('click', function () { mes = sumarMeses(mes, 1); cargar(); });
+    $('recargar').addEventListener('click', function () { cargar(true); });
+
+    $('bonos').addEventListener('click', function (ev) {
+      var b = ev.target.closest('button');
+      if (!b) return;
+      if (b.dataset.canjear) canjear(b.dataset.canjear, false, b);
+      if (b.dataset.deshacer) canjear(b.dataset.deshacer, true, b);
+    });
+    $('resultadoBono').addEventListener('click', function (ev) {
+      var b = ev.target.closest('button');
+      if (b && b.dataset.canjear) canjear(b.dataset.canjear, false, b);
+      if (b && b.dataset.deshacer) canjear(b.dataset.deshacer, true, b);
+    });
+    $('formBono').addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var codigo = $('codigoBono').value.trim();
+      if (!codigo) return;
+      $('resultadoBono').innerHTML = '<div class="vacio">Buscando…</div>';
+      llamar('/api/panel/bono?codigo=' + encodeURIComponent(codigo)).then(function (b) {
+        var txt = { activo: 'Válido: se puede usar.', canjeado: 'Ya se usó.', caducado: 'Caducado.', anulado: 'Anulado: se devolvió el dinero.' }[b.estado];
+        $('resultadoBono').innerHTML = '<div class="aviso ' + (b.estado === 'activo' ? 'prueba" style="background:var(--ok-fondo);color:var(--ok)' : 'error') + '"><b>' + esc(txt) + '</b></div><ul class="lista">' + filaBono(b) + '</ul>';
+      }).catch(function (e) {
+        if (e.message !== '401') $('resultadoBono').innerHTML = '<div class="aviso error">' + esc(e.message) + '</div>';
+      });
+    });
+
+    // Tooltip del gráfico
+    function verTip(el, x, y) {
+      if (!datos) return;
+      var s = datos.serie.find(function (z) { return z.mes === el.dataset.mes; });
+      if (!s) return;
+      var tip = $('tip');
+      tip.innerHTML = '<b>' + nombreMes(s.mes) + '</b><br>Señales ' + euros(s.senales) + '<br>Bonos ' + euros(s.bonos) + '<br>' + s.salidas + ' salidas';
+      tip.hidden = false;
+      tip.style.left = Math.min(x + 12, innerWidth - tip.offsetWidth - 8) + 'px';
+      tip.style.top = (y - tip.offsetHeight - 10) + 'px';
+    }
+    $('grafico').addEventListener('mousemove', function (ev) { var c = ev.target.closest('.col'); if (c) verTip(c, ev.clientX, ev.clientY); else $('tip').hidden = true; });
+    $('grafico').addEventListener('mouseleave', function () { $('tip').hidden = true; });
+    $('grafico').addEventListener('focusin', function (ev) { var c = ev.target.closest('.col'); if (c) { var r = c.getBoundingClientRect(); verTip(c, r.left, r.top); } });
+    $('grafico').addEventListener('focusout', function () { $('tip').hidden = true; });
+    $('grafico').addEventListener('click', function (ev) { var c = ev.target.closest('.col'); if (c) { mes = c.dataset.mes; cargar(); } });
+
+    if (clave) cargar(); else salir();
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12303d">
+    <title>Reservar · Centuria</title>
+  <meta name="description" content="Elige día y hora (mañana, mediodía o tarde) y reserva tu salida en barco con patrón pagando la señal online.">
+  <link rel="icon" href="imagenes/logo-centuria.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html"><img src="imagenes/logo-centuria.png" alt="" width="44" height="44"><span>Centuria</span></a>
+      <nav class="nav" id="nav">
+        <a href="index.html" data-i18n="navSalidas">Salidas</a>
+        <a href="barco.html" data-i18n="navBarco">El barco</a>
+        <a href="contacto.html" data-i18n="navContacto">Dónde estamos</a>
+        <a class="btn btn--small" href="disponibilidad.html" aria-current="page" data-i18n="navReservar">Reservar</a>
+        <div class="nav-social"><a href="https://www.instagram.com/centuria_sea_adventure/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="0.9" fill="currentColor" stroke="none"/></svg></a><a href="https://www.facebook.com/centuriaseaadventure" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 21v-7h2.6l.4-3.3h-3V8.8c0-.9.3-1.6 1.6-1.6h1.6V4.3a21 21 0 0 0-2.4-.1c-2.4 0-4 1.4-4 4.1v2.4H8.6V14h2.7v7"/></svg></a><a href="https://www.tiktok.com/@centuria.sea.adventure" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3v11.6a3.4 3.4 0 1 1-3.4-3.4"/><path d="M14 3c.4 2.7 2.3 4.6 5 4.9"/></svg></a><a href="mailto:info@centuriaseaadventure.com" aria-label="Email: info@centuriaseaadventure.com" title="info@centuriaseaadventure.com"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.2 8.4 6.8 8.4-6.8"/></svg></a></div>
+      </nav>
+      <div class="social-top"><a href="https://www.instagram.com/centuria_sea_adventure/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="0.9" fill="currentColor" stroke="none"/></svg></a><a href="https://www.facebook.com/centuriaseaadventure" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 21v-7h2.6l.4-3.3h-3V8.8c0-.9.3-1.6 1.6-1.6h1.6V4.3a21 21 0 0 0-2.4-.1c-2.4 0-4 1.4-4 4.1v2.4H8.6V14h2.7v7"/></svg></a><a href="https://www.tiktok.com/@centuria.sea.adventure" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3v11.6a3.4 3.4 0 1 1-3.4-3.4"/><path d="M14 3c.4 2.7 2.3 4.6 5 4.9"/></svg></a><a href="mailto:info@centuriaseaadventure.com" aria-label="Email: info@centuriaseaadventure.com" title="info@centuriaseaadventure.com"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.2 8.4 6.8 8.4-6.8"/></svg></a></div>
+      <div class="lang" role="group" aria-label="Idioma">
+        <button type="button" data-lang="es" aria-pressed="true" aria-label="Español"><svg class="flag" viewBox="0 0 3 2" width="21" height="14" aria-hidden="true"><rect width="3" height="2" fill="#c60b1e"/><rect y=".5" width="3" height="1" fill="#ffc400"/></svg><span>ES</span></button>
+        <button type="button" data-lang="en" aria-pressed="false" aria-label="English"><svg class="flag" viewBox="0 0 60 30" width="21" height="14" aria-hidden="true"><clipPath id="gb-t"><path d="M30,15h30v15zv15h-30zh-30v-15zv-15h30z"/></clipPath><path d="M0,0v30h60v-30z" fill="#012169"/><path d="M0,0L60,30M60,0L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0L60,30M60,0L0,30" clip-path="url(#gb-t)" stroke="#c8102e" stroke-width="4"/><path d="M30,0v30M0,15h60" stroke="#fff" stroke-width="10"/><path d="M30,0v30M0,15h60" stroke="#c8102e" stroke-width="6"/></svg><span>EN</span></button>
+      </div>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav" data-i18n="menu">Menú</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-head wrap">
+      <h1 data-i18n="reservarTitulo">Reservar</h1>
+      <p class="lead" data-i18n="reservarLead">El calendario muestra los huecos que el patrón tiene libres, en tres franjas: mañana, mediodía y tarde. Se reserva pagando una señal de 20 € por persona; el resto se paga en efectivo el día de la salida.</p>
+    </div>
+
+    <section class="block block--paper">
+      <div class="wrap">
+        <ol class="steps">
+          <li data-i18n="paso1"><strong>Elige salida</strong></li>
+          <li data-i18n="paso2"><strong>Elige día y hora</strong></li>
+          <li data-i18n="paso3"><strong>Paga la señal</strong></li>
+        </ol>
+
+        <div class="booking">
+          <div class="cal" id="cal">
+            <div class="cal-head">
+              <button type="button" id="mes-anterior" aria-label="Mes anterior">‹</button>
+              <h2 id="mes-titulo" aria-live="polite"></h2>
+              <button type="button" id="mes-siguiente" aria-label="Mes siguiente">›</button>
+            </div>
+            <div class="cal-week" id="cal-semana"></div>
+            <div class="cal-grid" id="cal-dias"></div>
+            <div class="cal-legend">
+              <span class="k-franjas-wrap"><i class="k-franjas"><b></b><b></b><b></b></i><span data-i18n="leyendaFranjas">Mañana · mediodía · tarde</span></span>
+              <span data-i18n="leyendaLibre"><i class="k-libre"></i>Libre</span>
+              <span data-i18n="leyendaOcupado"><i class="k-ocupado"></i>Reservado</span>
+              <span data-i18n="leyendaEvento"><i class="k-evento"></i>Fecha especial</span>
+            </div>
+            <p class="notice" id="cal-aviso" hidden></p>
+          </div>
+
+          <form class="form" id="reserva" novalidate>
+            <div class="field">
+              <label for="servicio" data-i18n="campoServicio">Salida</label>
+              <select id="servicio" required></select>
+              <p class="small" id="servicio-info"></p>
+            </div>
+
+            <div id="bloque-fecha">
+              <fieldset>
+                <legend data-i18n="campoDia">Día y hora</legend>
+                <p id="fecha-elegida" class="small">Toca un día del calendario.</p>
+                <div class="horarios" id="turnos" aria-live="polite"></div>
+              </fieldset>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label for="personas" data-i18n="campoPersonas">Personas</label>
+                <input id="personas" type="number" min="1" max="8" value="2" required inputmode="numeric">
+              </div>
+              <div class="field">
+                <label for="nombre" data-i18n="campoNombre">Nombre</label>
+                <input id="nombre" type="text" maxlength="80" autocomplete="name" required>
+              </div>
+            </div>
+
+            <div id="bloque-pago">
+              <fieldset>
+                <legend data-i18n="campoExtras">Extras (se pagan en efectivo el día de la salida)</legend>
+                <div class="checks" id="extras"></div>
+                <p class="notice" id="extras-aviso" hidden></p>
+              </fieldset>
+
+              <div class="field">
+                <label for="codigo" data-i18n="campoCodigo">Código de descuento</label>
+                <div class="code">
+                  <input id="codigo" type="text" autocomplete="off">
+                  <button type="button" class="btn btn--small" id="aplicar-codigo" data-i18n="aplicar">Aplicar</button>
+                </div>
+                <p class="code-msg" id="codigo-msg" aria-live="polite"></p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="notas" data-i18n="campoNotas">Algo que debamos saber (opcional)</label>
+              <textarea id="notas" rows="3" maxlength="450" data-i18n-placeholder="notasPh" placeholder="Un cumpleaños, alguien que se marea, para quién es el bono…"></textarea>
+            </div>
+
+            <div class="summary" id="resumen" aria-live="polite"></div>
+
+            <label class="consent" id="bloque-acepto">
+              <input type="checkbox" id="acepto" required>
+              <span data-i18n="acepto">He leído y acepto las <a href="condiciones.html" target="_blank" rel="noopener">condiciones de reserva y cancelación</a> y la <a href="condiciones.html#privacidad" target="_blank" rel="noopener">política de privacidad</a>.</span>
+            </label>
+
+            <button class="btn btn--block" type="submit" id="enviar">Pagar señal</button>
+            <p class="small" id="nota-envio"></p>
+            <p class="notice" id="form-error" role="alert" hidden></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="wrap faq">
+        <h2 data-i18n="faqTitulo">Preguntas frecuentes</h2>
+        <details>
+          <summary data-i18n="faq1q">¿Hace falta titulación o experiencia?</summary>
+          <p data-i18n="faq1a">No. El barco lo lleva siempre el patrón; vosotros solo disfrutáis.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq2q">¿Qué es la señal y qué pasa si cancelo?</summary>
+          <p data-i18n="faq2a">Son 20 € por persona que se descuentan del precio final; el resto se paga en efectivo el día de la salida. Si cancelas con más de 72 horas se devuelve entera; los plazos completos están en las <a href="condiciones.html">condiciones de reserva</a>.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq3q">¿Y si hace mal tiempo?</summary>
+          <p data-i18n="faq3a">El patrón revisa el parte antes de cada salida. Si no se puede salir con seguridad, eliges otra fecha o te devolvemos la señal.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq4q">¿Podemos llevar comida y bebida?</summary>
+          <p data-i18n="faq4a">Sí. Hay nevera a bordo; pregúntanos por el espacio si sois muchos.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq5q">¿Cómo funciona el bono regalo?</summary>
+          <p data-i18n="faq5a">Lo pides por WhatsApp eligiendo «Bono regalo» en el formulario. Vale 6 meses desde que se emite y quien lo recibe elige la fecha según disponibilidad.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq7q">¿Podemos llevar a nuestro perro?</summary>
+          <p data-i18n="faq7a">Sí, el barco es pet friendly. Márcalo en los extras (es gratis) y escríbele antes al patrón por WhatsApp para contarle cómo es: tamaño, si se marea, etc.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq6q">¿Dónde quedamos?</summary>
+          <p data-i18n="faq6a">En el Real Club El Candado (Málaga Este). Al confirmar te mandamos el punto exacto del pantalán.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-stern" aria-hidden="true">
+      <span class="foot-name"><svg class="wordmark" viewBox="0 0 1000 172" aria-hidden="true" focusable="false"><text x="4" y="150" textLength="984" lengthAdjust="spacingAndGlyphs">CENTURIA</text></svg></span>
+      <div class="waterline"><i></i><i></i></div>
+      <span class="foot-port">Málaga</span>
+    </div>
+    <div class="wrap foot-cols">
+      <div>
+        <strong>Centuria Sea Adventure</strong>
+        <p data-i18n="pieTexto">Salidas privadas en barco con patrón.<br>Real Club El Candado, Málaga.</p>
+        <a data-telefono></a>
+        <p class="social foot-social"><a href="mailto:info@centuriaseaadventure.com">info@centuriaseaadventure.com</a></p>
+        <div class="social-icons"><a href="https://www.instagram.com/centuria_sea_adventure/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="0.9" fill="currentColor" stroke="none"/></svg></a><a href="https://www.facebook.com/centuriaseaadventure" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 21v-7h2.6l.4-3.3h-3V8.8c0-.9.3-1.6 1.6-1.6h1.6V4.3a21 21 0 0 0-2.4-.1c-2.4 0-4 1.4-4 4.1v2.4H8.6V14h2.7v7"/></svg></a><a href="https://www.tiktok.com/@centuria.sea.adventure" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3v11.6a3.4 3.4 0 1 1-3.4-3.4"/><path d="M14 3c.4 2.7 2.3 4.6 5 4.9"/></svg></a><a href="mailto:info@centuriaseaadventure.com" aria-label="Email: info@centuriaseaadventure.com" title="info@centuriaseaadventure.com"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.2 8.4 6.8 8.4-6.8"/></svg></a></div>
+      </div>
+      <ul>
+        <li><a href="index.html" data-i18n="navSalidas">Salidas</a></li>
+        <li><a href="barco.html" data-i18n="navBarco">El barco</a></li>
+        <li><a href="disponibilidad.html" data-i18n="navReservar">Reservar</a></li>
+        <li><a href="contacto.html" data-i18n="navContacto">Dónde estamos</a></li>
+      </ul>
+      <ul>
+        <li><a href="condiciones.html" data-i18n="pieCondiciones">Condiciones de reserva</a></li>
+        <li><a href="condiciones.html#privacidad" data-i18n="piePrivacidad">Privacidad</a></li>
+        <li><a href="condiciones.html#aviso-legal" data-i18n="pieAviso">Aviso legal</a></li>
+        <li>© <span data-anio></span> Centuria Sea Adventure</li>
+      </ul>
+    </div>
+  </footer>
+
+  <a class="wa-float" data-wa href="#" aria-label="WhatsApp"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4.2 19.8 5.4 16A8.3 8.3 0 1 1 8.3 18.7Z"/><path d="M9.2 8.6c-.2 2.9 3.1 6.4 6.2 6.2l.9-1.4-1.9-.9-.9.8a4.6 4.6 0 0 1-2.8-2.8l.8-.9-.9-1.9Z"/></svg><span>WhatsApp</span></a>
+
+  <script defer src="js/datos.js"></script>
+  <script defer src="js/en.js"></script>
+  <script defer src="js/app.js"></script>
+  <script defer src="js/reservas.js"></script>
+</body>
+</html>
